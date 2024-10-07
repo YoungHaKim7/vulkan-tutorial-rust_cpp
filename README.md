@@ -21,6 +21,8 @@
 
 <hr />
 
+- 내가 공부하려고 만든 영상 (모아보기)GlobalYoung
+  - https://youtube.com/playlist?list=PLcMveqN_07mYLlQ72z9uktIcWF0kNLGxB&si=4JwpIMy4iZVYJsnk
 
 
 <hr>
