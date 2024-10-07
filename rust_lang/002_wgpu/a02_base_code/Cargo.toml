@@ -1,0 +1,8 @@
+[package]
+name = "a02_base_code"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.89"
+winit = "0.30.5"
