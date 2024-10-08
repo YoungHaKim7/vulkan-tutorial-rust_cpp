@@ -1,59 +1,17 @@
-// use winit::event_loop::EventLoop;
-
-// const WIDTH: u32 = 800;
-// const HEIGHT: u32 = 600;
-
-// struct HelloTriangleApplication {
-//     events_loop: EventLoop,
-// }
-
-// impl HelloTriangleApplication {
-//     pub fn initialize() -> Self {
-//         Self {}
-//     }
-
-//     fn main_loop(&mut self) {}
-
-//     pub fn run() -> Self {
-//         let events_loop = Self::init_window();
-
-//         Self { events_loop }
-//     }
-
-//     fn init_window() -> EventLoop {
-//         let events_loop = EventLoop::new();
-//         let window = WindowBuilder::new().build(&events_loop).unwrap();
-
-//         events_loop.run(move |event, _, control_flow| {
-//             *control_flow = winit::event_loop::ControlFlow::Wait;
-
-//             match event {
-//                 winit::event::Event::WindowEvent {
-//                     event: winit::event::WindowEvent::CloseRequested,
-//                     ..
-//                 } => *control_flow = winit::event_loop::ControlFlow::Exit,
-//                 _ => (),
-//             }
-//         });
-//     }
-// }
-
-// fn main() {
-//     let mut app = HelloTriangleApplication::initialize();
-//     app.main_loop();
-// }
-
 use winit::application::ApplicationHandler;
 use winit::event::WindowEvent;
 use winit::event_loop::{ActiveEventLoop, ControlFlow, EventLoop};
 use winit::window::{Window, WindowId};
 
+const WIDTH: u32 = 800;
+const HEIGHT: u32 = 600;
+
 #[derive(Default)]
-struct App {
+struct HelloTriangleApplication {
     window: Option<Window>,
 }
 
-impl ApplicationHandler for App {
+impl ApplicationHandler for HelloTriangleApplication {
     fn resumed(&mut self, event_loop: &ActiveEventLoop) {
         self.window = Some(
             event_loop
@@ -101,6 +59,6 @@ fn main() {
     // input, and uses significantly less power/CPU time than ControlFlow::Poll.
     event_loop.set_control_flow(ControlFlow::Wait);
 
-    let mut app = App::default();
+    let mut app = HelloTriangleApplication::default();
     event_loop.run_app(&mut app);
 }
