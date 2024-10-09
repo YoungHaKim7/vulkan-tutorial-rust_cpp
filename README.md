@@ -30,6 +30,8 @@
   - https://google.github.io/tour-of-wgsl/
   - 여기에 정리중...
     - https://github.com/YoungHaKim7/WGSL_Training
+      - Rust로 만든 WGSL-playground(cargo run 하고 뒤에 "파일명.wgsl"하면 화면으로 나옴 굿)
+        - https://github.com/paulgb/wgsl-playground 
 
 <hr />
 
