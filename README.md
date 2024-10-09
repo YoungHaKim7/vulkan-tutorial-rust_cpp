@@ -126,6 +126,11 @@ Comparison to other well-known Graphics APIs in Rust ecosystem.
   - The graphics pipeline in Vulkan is set up by creating a `VkPipeline` object. 
     - It describes the configurable state of the graphics card, like the viewport size and depth buffer operation and the programmable state using `VkShaderModule` objects.
 
+- Step 7 - Command pools and command buffers
+  - As mentioned earlier, many of the operations in Vulkan that we want to execute, like drawing operations, need to be submitted to a queue. These operations first need to be recorded into a `VkCommandBuffer` before they can be submitted. These command buffers are allocated from a `VkCommandPool` that is associated with a specific queue family. To draw a simple triangle, we need to record a command buffer with the following operations:
+    - 1. Begin the render pass
+    - 2. Bind the graphics pipeline
+    - 3. Draw 3 vertices
 
 
 
