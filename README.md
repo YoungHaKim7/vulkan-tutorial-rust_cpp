@@ -32,7 +32,8 @@
 
 # Vulkan(API)[|🔝|](#link)
 
-- [Vilkan API docs문서(API찾을때 굿](https://docs.vulkan.org/spec/latest/index.html)
+- [Vulkan API docs문서(API찾을때 굿](https://docs.vulkan.org/spec/latest/index.html)
+  - [Vulkan Blog에 잘 정리됨](https://www.khronos.org/blog/an-introduction-to-vulkan-video)
 
 - https://www.vulkan.org/
   - Vulkanised 2024 | Vulkan 공식 유튜브
