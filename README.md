@@ -113,6 +113,9 @@ Comparison to other well-known Graphics APIs in Rust ecosystem.
   - After selecting the right hardware device to use, you need to create a `VkDevice` (logical device), where you describe more specifically which `VkPhysicalDeviceFeatures` you will be using, like multi viewport rendering and 64 bit floats.
 - Step 3 - Window surface and swap chain
   - Unless you’re only interested in offscreen rendering, you will need to create a window to present rendered images to.
-    - ‘We need two more components to actually render to a window: a window surface (`VkSurfaceKHR`) and a swap chain (`VkSwapchainKHR`)
+    - We need two more components to actually render to a window: a window surface (`VkSurfaceKHR`) and a swap chain (`VkSwapchainKHR`)
+- Step 4 - Image views and framebuffers
+  - To draw to an image acquired from the swap chain, we have to wrap it into a `VkImageView` and `VkFramebuffer`.
+
 
 - 출처: 다음에서 발췌 Vulkan Tutorial | Alexander Overvoorde
