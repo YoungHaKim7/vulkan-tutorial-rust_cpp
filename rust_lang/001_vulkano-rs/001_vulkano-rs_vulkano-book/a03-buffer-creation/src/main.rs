@@ -4,14 +4,18 @@
 
 use std::sync::Arc;
 
-use vulkano::buffer::{Buffer, BufferCreateInfo, BufferUsage};
-use vulkano::command_buffer::allocator::StandardCommandBufferAllocator;
-use vulkano::command_buffer::{AutoCommandBufferBuilder, CommandBufferUsage, CopyBufferInfo};
-use vulkano::device::{Device, DeviceCreateInfo, QueueCreateInfo, QueueFlags};
-use vulkano::instance::{Instance, InstanceCreateInfo};
-use vulkano::memory::allocator::{AllocationCreateInfo, MemoryTypeFilter, StandardMemoryAllocator};
-use vulkano::sync::{self, GpuFuture};
-use vulkano::VulkanLibrary;
+use vulkano::{
+    buffer::{Buffer, BufferCreateInfo, BufferUsage},
+    command_buffer::{
+        allocator::StandardCommandBufferAllocator, AutoCommandBufferBuilder, CommandBufferUsage,
+        CopyBufferInfo,
+    },
+    device::{Device, DeviceCreateInfo, QueueCreateInfo, QueueFlags},
+    instance::{Instance, InstanceCreateInfo},
+    memory::allocator::{AllocationCreateInfo, MemoryTypeFilter, StandardMemoryAllocator},
+    sync::{self, GpuFuture},
+    VulkanLibrary,
+};
 
 fn main() {
     // Initialization
