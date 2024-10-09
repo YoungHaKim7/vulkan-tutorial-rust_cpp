@@ -51,6 +51,8 @@
   - Vulkan vs directX 차이점 이해
     - https://techscene.tistory.com/entry/게이머-필독-Vulkan과-DirectX-비교-분석-발더스-게이트-3
 
+- [Big Picture(step 8)](test)
+
 # Learning Vulkan with Rust | Tsoding Daily[|🔝|](#link)
 - https://youtu.be/8iEN64bj3X4?si=45lau6cdCsHBQvkl
 
@@ -102,6 +104,6 @@ Comparison to other well-known Graphics APIs in Rust ecosystem.
 # Shader[|🔝|](#link)
 - https://en.m.wikipedia.org/wiki/Shader
 
-# Big Picture
+# Big Picture(step 8)[|🔝|](#link)
 - Step1(Instance and physical device selection)
   - A Vulkan application start by setting up the Vulkan API through a `VkInstance`.
