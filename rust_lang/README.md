@@ -3,6 +3,9 @@
 - https://github.com/vulkano-rs/vulkano/tree/master/examples
   - https://github.com/vulkano-rs/vulkano
 
+- eBooks
+  - https://vulkano.rs/
+
 <hr />
 
 # Install
