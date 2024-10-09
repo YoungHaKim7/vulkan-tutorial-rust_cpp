@@ -116,6 +116,11 @@ Comparison to other well-known Graphics APIs in Rust ecosystem.
     - We need two more components to actually render to a window: a window surface (`VkSurfaceKHR`) and a swap chain (`VkSwapchainKHR`)
 - Step 4 - Image views and framebuffers
   - To draw to an image acquired from the swap chain, we have to wrap it into a `VkImageView` and `VkFramebuffer`.
+- Step 5 - Render passes
+  - Render passes in Vulkan describe the type of images that are used during rendering operations, how they will be used, and how their contents should be treated.
+    - In our initial triangle rendering application, we’ll tell Vulkan that we will use a single image as color target and that we want it to be cleared to a solid color right before the drawing operation. Whereas a render pass only describes the type of images, a `VkFramebuffer` actually binds specific images to these slots.
+
+
 
 
 - 출처: 다음에서 발췌 Vulkan Tutorial | Alexander Overvoorde
