@@ -135,6 +135,24 @@ Comparison to other well-known Graphics APIs in Rust ecosystem.
 - Step 8 - Main loop
   - Now that the drawing commands have been wrapped into a command buffer, the main loop is quite straightforward. We first acquire an image from the swap chain with `vkAcquireNextImageKHR`. We can then select the appropriate command buffer for that image and execute it with `vkQueueSubmit`. Finally, we return the image to the swap chain for presentation to the screen with `vkQueuePresentKHR`.
 
-
-
 - 출처: 다음에서 발췌 Vulkan Tutorial | Alexander Overvoorde
+
+<hr />
+
+## (Summary)So in short, to draw the first triangle we need to:
+
+- Create a `VkInstance`
+- Select a supported graphics card (`VkPhysicalDevice`)
+- Create a `VkDevice` and `VkQueue` for drawing and presentation
+- Create a window, window surface and swap chain
+- Wrap the swap chain images into `VkImageView`
+- Create a render pass that specifies the render targets and usage
+- Create framebuffers for the render pass
+- Set up the graphics pipeline
+- Allocate and record a command buffer with the draw commands for every possible swap chain image
+- Draw frames by acquiring images, submitting the right draw command buffer and returning the images back to the swap chain
+
+<hr />
+
+
+
