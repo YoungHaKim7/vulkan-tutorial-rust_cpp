@@ -132,6 +132,8 @@ Comparison to other well-known Graphics APIs in Rust ecosystem.
     - 2. Bind the graphics pipeline
     - 3. Draw 3 vertices
 
+- Step 8 - Main loop
+  - Now that the drawing commands have been wrapped into a command buffer, the main loop is quite straightforward. We first acquire an image from the swap chain with `vkAcquireNextImageKHR`. We can then select the appropriate command buffer for that image and execute it with `vkQueueSubmit`. Finally, we return the image to the swap chain for presentation to the screen with `vkQueuePresentKHR`.
 
 
 
