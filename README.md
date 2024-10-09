@@ -98,5 +98,5 @@ Comparison to other well-known Graphics APIs in Rust ecosystem.
 - https://en.m.wikipedia.org/wiki/Shader
 
 # Big Picture
-- Step1
+- Step1(Instance and physical device selection)
   - A Vulkan application start by setting up the Vulkan API through a `VkInstance`.
