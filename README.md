@@ -28,6 +28,8 @@
 
 - WGSL Tutorial
   - https://google.github.io/tour-of-wgsl/
+  - 여기에 정리중...
+    - https://github.com/YoungHaKim7/WGSL_Training
 
 <hr />
 
