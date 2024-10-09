@@ -56,6 +56,11 @@
 
 <hr>
 
+# OpenGL-rs
+- https://github.com/bwasty/learn-opengl-rs
+
+<hr />
+
 # NVIDIA[|🔝|](#link)
 
 - https://www.nvidia.com/en-us/drivers/unix/
