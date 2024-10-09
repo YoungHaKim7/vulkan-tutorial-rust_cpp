@@ -5,6 +5,9 @@
   - cpp code 
     - https://github.com/Overv/VulkanTutorial/blob/main/code/00_base_code.cpp
 
+# wgpu(c언어 test예정)
+- https://github.com/gfx-rs/wgpu-native/tree/trunk/examples/triangle
+
 # justfile
 
 ```justfile
