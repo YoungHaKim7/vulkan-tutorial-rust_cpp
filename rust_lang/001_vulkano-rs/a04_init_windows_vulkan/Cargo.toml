@@ -1,0 +1,10 @@
+[package]
+name = "a04_init_windows_vulkan"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+vulkano = "0.34.1"
+
+[profile.dev]
+opt-level = 1
