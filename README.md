@@ -119,6 +119,10 @@ Comparison to other well-known Graphics APIs in Rust ecosystem.
 - Step 5 - Render passes
   - Render passes in Vulkan describe the type of images that are used during rendering operations, how they will be used, and how their contents should be treated.
     - In our initial triangle rendering application, we’ll tell Vulkan that we will use a single image as color target and that we want it to be cleared to a solid color right before the drawing operation. Whereas a render pass only describes the type of images, a `VkFramebuffer` actually binds specific images to these slots.
+- Step 6 - Graphics pipeline
+  - The graphics pipeline in Vulkan is set up by creating a `VkPipeline` object. 
+    - It describes the configurable state of the graphics card, like the viewport size and depth buffer operation and the programmable state using `VkShaderModule` objects.
+
 
 
 
