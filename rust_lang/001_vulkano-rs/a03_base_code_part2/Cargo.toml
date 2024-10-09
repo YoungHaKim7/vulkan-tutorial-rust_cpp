@@ -1,0 +1,10 @@
+[package]
+name = "a03_base_code_part2"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+vulkano = "0.34.1"
+winit = "0.29"
+x11-dl = "2.21.0"
+x11rb = "0.13.1"
