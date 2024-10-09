@@ -109,5 +109,10 @@ Comparison to other well-known Graphics APIs in Rust ecosystem.
 # Big Picture(step 8)[|🔝|](#link)
 - Step1(Instance and physical device selection)
   - A Vulkan application start by setting up the Vulkan API through a `VkInstance`.
-- ‘Step 2 - Logical device and queue families’
-  - ‘After selecting the right hardware device to use, you need to create a `VkDevice` (logical device), where you describe more specifically which `VkPhysicalDeviceFeatures` you will be using, like multi viewport rendering and 64 bit floats.’
+- Step 2 - Logical device and queue families
+  - After selecting the right hardware device to use, you need to create a `VkDevice` (logical device), where you describe more specifically which `VkPhysicalDeviceFeatures` you will be using, like multi viewport rendering and 64 bit floats.
+- Step 3 - Window surface and swap chain
+  - Unless you’re only interested in offscreen rendering, you will need to create a window to present rendered images to.
+    - ‘We need two more components to actually render to a window: a window surface (`VkSurfaceKHR`) and a swap chain (`VkSwapchainKHR`)
+
+- 출처: 다음에서 발췌 Vulkan Tutorial | Alexander Overvoorde
