@@ -11,3 +11,6 @@
 # Vulkan Tutorial(Rust)
 
 - https://kylemayes.github.io/vulkanalia/setup/base_code.html
+
+# wgpu-native
+- https://github.com/gfx-rs/wgpu-native
