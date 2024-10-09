@@ -18,6 +18,8 @@
 - https://vulkan-tutorial.com/
 
 - eBook
+  - (Rust) Vulkan eBook
+    - https://vulkano.rs/
   - Raytracing
     - https://github.com/RayTracing/raytracing.github.io
   - https://www.pbr-book.org/
