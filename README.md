@@ -34,6 +34,8 @@
 
 - [Vulkan API docs문서(API찾을때 굿](https://docs.vulkan.org/spec/latest/index.html)
   - [Vulkan Blog에 잘 정리됨](https://www.khronos.org/blog/an-introduction-to-vulkan-video)
+  - [Vulkan 그룹에서 제공하는 Reference guide 및 다양한 정보가 많다The Khronos Group Reference Guides are available as downloadable PDFs, online viewable format using Slideshare and a hardcopy format from LuLu.
+If you find a mistake in any of the reference guides, please submit a bug.](https://www.khronos.org/developers/reference-cards/)
 
 - https://www.vulkan.org/
   - Vulkanised 2024 | Vulkan 공식 유튜브
