@@ -1,0 +1,13 @@
+[package]
+name = "wgsl_playground_training"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bytemuck = { version = "1.18.0", features = ["derive"] }
+clap = { version = "4.5.20", features = ["derive"] }
+futures = "0.3.31"
+notify = "6.1.1"
+wgpu = { version = "22.1.0", features = ["naga-ir"] }
+wgpu-subscriber = "0.1.0"
+winit = "0.30.5"
