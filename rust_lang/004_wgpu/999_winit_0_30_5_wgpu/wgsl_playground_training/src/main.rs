@@ -1,14 +1,9 @@
-use std::{fs::OpenOptions, io::Write, path::PathBuf};
+use std::{fs::OpenOptions, io::Write};
 
 use clap::Parser;
 
-#[derive(Parser)]
-struct Opts {
-    wgsl_file: PathBuf,
-
-    #[clap(short, long)]
-    create: bool,
-}
+use app::{opts::Opts, playgound::Playground};
+mod app;
 
 fn main() {
     wgpu_subscriber::initialize_default_subscriber(None);
@@ -30,4 +25,6 @@ fn main() {
         };
         file.write_all(include_bytes!("frag.default.wgsl")).unwrap();
     }
+
+    Playground::run(&opts);
 }
