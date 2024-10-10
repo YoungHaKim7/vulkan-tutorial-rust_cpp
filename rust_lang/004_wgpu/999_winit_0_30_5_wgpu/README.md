@@ -1,1 +1,2 @@
 - https://github.com/rbxb/wgpu_automata
+- https://github.com/paulgb/wgsl-playground
