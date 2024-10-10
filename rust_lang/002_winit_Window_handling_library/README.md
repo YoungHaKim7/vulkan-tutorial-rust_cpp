@@ -49,3 +49,15 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(event_loop.run_app(app)?)
 }
 ```
+# Result
+
+```bash
+
+```
+
+# Result
+
+```bash
+
+```
+
