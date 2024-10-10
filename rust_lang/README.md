@@ -26,7 +26,7 @@
 cargo wgsl
 ```
 
-# 종류별 정리
+# Vulkano관련 종류별 정리
 
 - vulkano[![crates.io](https://img.shields.io/crates/v/vulkano.svg)](https://crates.io/crates/vulkano)
 ![Crates.io](https://img.shields.io/crates/l/vulkano)
@@ -38,7 +38,7 @@ cargo wgsl
   - https://crates.io/crates/vulkano
   - https://github.com/vulkano-rs/vulkano
 
-<hr>
+<hr />
 
 - winit[![crates.io](https://img.shields.io/crates/v/winit.svg)](https://crates.io/crates/winit)
 ![Crates.io](https://img.shields.io/crates/l/winit)
@@ -48,3 +48,15 @@ cargo wgsl
 - winit - Cross-platform window creation and management in Rust
   - https://crates.io/crates/winit
   - https://github.com/rust-windowing/winit
+
+<hr />
+
+- wgpu[![crates.io](https://img.shields.io/crates/v/wgpu.svg)](https://crates.io/crates/wgpu)
+![Crates.io](https://img.shields.io/crates/l/wgpu)
+![Downloads](https://img.shields.io/crates/d/wgpu.svg)<a href="https://github.com/rust-windowing/winit"><img alt="githubicon" width="20px" src="https://user-images.githubusercontent.com/67513038/218287708-001511d7-1cce-42d3-92d2-4a61193b38f0.png" /></a>
+![icedstar](https://img.shields.io/github/stars/gfx-rs/wgpu.svg)
+
+- wgpu is a cross-platform, safe, pure-rust graphics API. It runs natively on Vulkan, Metal, D3D12, and OpenGL; and on top of WebGL2 and WebGPU on wasm.
+  - The API is based on the WebGPU standard. It serves as the core of the WebGPU integration in Firefox and Deno.
+    - https://crates.io/crates/wgpu
+    - https://github.com/gfx-rs/wgpu
