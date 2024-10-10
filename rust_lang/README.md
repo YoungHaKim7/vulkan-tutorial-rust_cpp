@@ -36,3 +36,4 @@ cargo wgsl
     - Safe and rich Rust wrapper around the Vulkan API
 
     - https://crates.io/crates/vulkano
+    - https://github.com/vulkano-rs/vulkano
