@@ -15,20 +15,22 @@ use rwh_06::{DisplayHandle, HasDisplayHandle};
 #[cfg(not(any(android_platform, ios_platform)))]
 use softbuffer::{Context, Surface};
 
-use winit::application::ApplicationHandler;
-use winit::dpi::{LogicalSize, PhysicalPosition, PhysicalSize};
-use winit::event::{DeviceEvent, DeviceId, Ime, MouseButton, MouseScrollDelta, WindowEvent};
-use winit::event_loop::{ActiveEventLoop, EventLoop};
-use winit::keyboard::{Key, ModifiersState};
 #[cfg(macos_platform)]
 use winit::platform::macos::{OptionAsAlt, WindowAttributesExtMacOS, WindowExtMacOS};
 #[cfg(any(x11_platform, wayland_platform))]
 use winit::platform::startup_notify::{
     self, EventLoopExtStartupNotify, WindowAttributesExtStartupNotify, WindowExtStartupNotify,
 };
-use winit::window::{
-    Cursor, CursorGrabMode, CustomCursor, CustomCursorSource, Fullscreen, Icon, ResizeDirection,
-    Theme, Window, WindowId,
+use winit::{
+    application::ApplicationHandler,
+    dpi::{LogicalSize, PhysicalPosition, PhysicalSize},
+    event::{DeviceEvent, DeviceId, Ime, MouseButton, MouseScrollDelta, WindowEvent},
+    event_loop::{ActiveEventLoop, EventLoop},
+    keyboard::{Key, ModifiersState},
+    window::{
+        Cursor, CursorGrabMode, CustomCursor, CustomCursorSource, Fullscreen, Icon,
+        ResizeDirection, Theme, Window, WindowId,
+    },
 };
 
 #[path = "util/tracing.rs"]
