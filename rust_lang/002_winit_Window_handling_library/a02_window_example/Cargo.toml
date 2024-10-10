@@ -1,0 +1,49 @@
+[package]
+name = "a02_window_example"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+cursor-icon = "1.1.0"
+image = "0.25.2"
+rwh_06 = { package = "raw-window-handle", version = "0.6", features = ["std"], optional = true }
+softbuffer = "0.4.6"
+tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+winit = { version = "0.30.5", features = ["rwh_05", "rwh_06"] }
+
+[build-dependencies]
+cfg_aliases = "0.2.1"
+
+
+[target.'cfg(not(target_os = "android"))'.dev-dependencies]
+softbuffer = { version = "0.4.6", default-features = false, features = [
+    "x11",
+    "x11-dlopen",
+    "wayland",
+    "wayland-dlopen",
+] }
+
+[package.metadata.docs.rs]
+targets = [
+    # Windows
+    "i686-pc-windows-msvc",
+    "x86_64-pc-windows-msvc",
+    # macOS
+    "aarch64-apple-darwin",
+    "x86_64-apple-darwin",
+    # Unix (X11 & Wayland)
+    "i686-unknown-linux-gnu",
+    "x86_64-unknown-linux-gnu",
+    # iOS
+    "aarch64-apple-ios",
+    # Android
+    "aarch64-linux-android",
+    # Web
+    "wasm32-unknown-unknown",
+]
+
+[features]
+default = ["rwh_06"]
+rwh_06 = ["dep:rwh_06"]
+# x11 = ["bytemuck", "percent-encoding", "xkbcommon-dl/x11", "x11rb"]
