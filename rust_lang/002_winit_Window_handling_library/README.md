@@ -15,7 +15,7 @@
   - `Cargo.toml` 추가하면 끝
     - `winit = { version = "0.30.5", features = ["rwh_05"]}`
 
-# windows.rs 여기를 참고하자
+# window.rs 여기를 참고하자
 - https://github.com/rust-windowing/winit/blob/master/examples/window.rs#L43-L72
 
 ```rs
