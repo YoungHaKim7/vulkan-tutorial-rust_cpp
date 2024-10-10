@@ -43,7 +43,7 @@ cargo wgsl
 - winit[![crates.io](https://img.shields.io/crates/v/winit.svg)](https://crates.io/crates/winit)
 ![Crates.io](https://img.shields.io/crates/l/winit)
 ![Downloads](https://img.shields.io/crates/d/winit.svg)<a href="https://github.com/rust-windowing/winit"><img alt="githubicon" width="20px" src="https://user-images.githubusercontent.com/67513038/218287708-001511d7-1cce-42d3-92d2-4a61193b38f0.png" /></a>
-![icedstar](https://img.shields.io/github/stars/rust-windowing/winit.svg)
+![Star](https://img.shields.io/github/stars/rust-windowing/winit.svg)
 
 - winit - Cross-platform window creation and management in Rust
   - https://crates.io/crates/winit
@@ -53,10 +53,21 @@ cargo wgsl
 
 - wgpu[![crates.io](https://img.shields.io/crates/v/wgpu.svg)](https://crates.io/crates/wgpu)
 ![Crates.io](https://img.shields.io/crates/l/wgpu)
-![Downloads](https://img.shields.io/crates/d/wgpu.svg)<a href="https://github.com/rust-windowing/winit"><img alt="githubicon" width="20px" src="https://user-images.githubusercontent.com/67513038/218287708-001511d7-1cce-42d3-92d2-4a61193b38f0.png" /></a>
-![icedstar](https://img.shields.io/github/stars/gfx-rs/wgpu.svg)
+![Downloads](https://img.shields.io/crates/d/wgpu.svg)<a href="https://github.com/gfx-rs/wgpu"><img alt="githubicon" width="20px" src="https://user-images.githubusercontent.com/67513038/218287708-001511d7-1cce-42d3-92d2-4a61193b38f0.png" /></a>
+![star](https://img.shields.io/github/stars/gfx-rs/wgpu.svg)
 
 - wgpu is a cross-platform, safe, pure-rust graphics API. It runs natively on Vulkan, Metal, D3D12, and OpenGL; and on top of WebGL2 and WebGPU on wasm.
   - The API is based on the WebGPU standard. It serves as the core of the WebGPU integration in Firefox and Deno.
     - https://crates.io/crates/wgpu
     - https://github.com/gfx-rs/wgpu
+
+<hr />
+
+- vulkanalia[![crates.io](https://img.shields.io/crates/v/vulkanalia.svg)](https://crates.io/crates/vulkanalia)
+![Crates.io](https://img.shields.io/crates/l/vulkanalia)
+![Downloads](https://img.shields.io/crates/d/vulkanalia.svg)<a href="https://github.com/KyleMayes/vulkanalia"><img alt="githubicon" width="20px" src="https://user-images.githubusercontent.com/67513038/218287708-001511d7-1cce-42d3-92d2-4a61193b38f0.png" /></a>
+![Star](https://img.shields.io/github/stars/KyleMayes/vulkanalia.svg)
+
+- Vulkan bindings for Rust. 
+  - https://crates.io/crates/vulkanalia
+  - https://github.com/KyleMayes/vulkanalia
