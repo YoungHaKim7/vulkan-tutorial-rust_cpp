@@ -1,12 +1,13 @@
 //! Simple winit application.
 
-use std::collections::HashMap;
-use std::error::Error;
-use std::fmt::Debug;
+use std::{collections::HashMap, error::Error, fmt::Debug};
+
 #[cfg(not(any(android_platform, ios_platform)))]
-use std::num::NonZeroU32;
-use std::sync::Arc;
-use std::{fmt, mem};
+use std::{
+    num::NonZeroU32,
+    sync::Arc,
+    {fmt, mem},
+};
 
 use ::tracing::{error, info};
 use cursor_icon::CursorIcon;
