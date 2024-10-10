@@ -10,7 +10,7 @@ rwh_06 = { package = "raw-window-handle", version = "0.6", features = ["std"], o
 softbuffer = "0.4.6"
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
-winit = { version = "0.30.5", features = ["rwh_05", "rwh_06"] }
+winit = { version = "0.30.5", features = ["rwh_06"] }
 
 [build-dependencies]
 cfg_aliases = "0.2.1"
@@ -46,4 +46,3 @@ targets = [
 [features]
 default = ["rwh_06"]
 rwh_06 = ["dep:rwh_06"]
-# x11 = ["bytemuck", "percent-encoding", "xkbcommon-dl/x11", "x11rb"]
