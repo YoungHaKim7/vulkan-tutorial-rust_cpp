@@ -70,6 +70,9 @@ If you find a mistake in any of the reference guides, please submit a bug.](http
 - [Big Picture(step 8)](#big-picturestep-8)
   - [요약본 같이 보면 더 좋다 Summary)So in short, to draw the first triangle we need to:](#summaryso-in-short-to-draw-the-first-triangle-we-need-to)
 
+# Command line tool for building Rust shaders using rust-gpu 
+- https://github.com/Rust-GPU/cargo-gpu
+
 # Learning Vulkan with Rust | Tsoding Daily[|🔝|](#link)
 - https://youtu.be/8iEN64bj3X4?si=45lau6cdCsHBQvkl
 
