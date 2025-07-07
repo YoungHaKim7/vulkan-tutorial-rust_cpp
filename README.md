@@ -188,4 +188,29 @@ If you find a mistake in any of the reference guides, please submit a bug.](http
 <hr />
 
 
+# How to Use Glslang[|🔝|](#link)
+- https://github.com/KhronosGroup/glslang
+
+## Execution of Standalone Wrapper
+
+- To use the standalone binary form, execute glslang, and it will print a usage statement. Basic operation is to give it a file containing a shader, and it will print out warnings/errors and optionally an AST.
+
+- The applied stage-specific rules are based on the file extension:
+  - .vert for a vertex shader
+  - .tesc for a tessellation control shader
+  - .tese for a tessellation evaluation shader
+  - .geom for a geometry shader
+  - .frag for a fragment shader
+  - .comp for a compute shader
+
+- For ray tracing pipeline shaders:
+  - .rgen for a ray generation shader
+  - .rint for a ray intersection shader
+  - .rahit for a ray any-hit shader
+  - .rchit for a ray closest-hit shader
+  - .rmiss for a ray miss shader
+  - .rcall for a callable shader
+
+- There is also a non-shader extension:
+  - .conf for a configuration file of limits, see usage statement for example
 
