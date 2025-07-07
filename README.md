@@ -70,6 +70,28 @@ If you find a mistake in any of the reference guides, please submit a bug.](http
 - [Big Picture(step 8)](#big-picturestep-8)
   - [요약본 같이 보면 더 좋다 Summary)So in short, to draw the first triangle we need to:](#summaryso-in-short-to-draw-the-first-triangle-we-need-to)
 
+<hr />
+
+# Vulkan vs OpenGL
+
+||Vulkan|OpenGL|
+|-|-|-|
+|Thread|Multithreading|Singlethreading|
+
+- 그림으로 이해
+  - OpenGL and Vulkan are both rendering APIs. In both cases, the GPU executes shaders, while the CPU executes everything else.
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Division_of_labor_cpu_and_gpu.svg/500px-Division_of_labor_cpu_and_gpu.svg.png" />
+
+- Vulkan
+  - https://vkguide.dev/docs/extra-chapter/multithreading/
+  - https://en.wikipedia.org/wiki/Vulkan
+    - 한글 설명서
+
+- OpenGL
+  - https://en.wikipedia.org/wiki/OpenGL
+
+
 # Command line tool for building Rust shaders using rust-gpu 
 - https://github.com/Rust-GPU/cargo-gpu
 
