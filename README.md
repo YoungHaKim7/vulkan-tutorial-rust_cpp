@@ -74,14 +74,10 @@ If you find a mistake in any of the reference guides, please submit a bug.](http
 
 # Vulkan vs OpenGL
 
-||Vulkan|OpenGL|
+
+|-|OpenGL | Vulkan|
 |-|-|-|
-
-- https://en.wikipedia.org/wiki/Vulkan
-
-|OpenGL | Vulkan|
-|-|-|
-|Thread|Singlethreading||Multithreading
+|Thread|Singlethreading|Multithreading|
 |global<br> state<br> machine|One single global state machine |	Object-based with no global state|
 |state<br> concepts|State is tied to a single context |	All state concepts are localized to a command buffer|
 ||Operations can only be executed sequentially |	Multi-threaded programming is possible|
