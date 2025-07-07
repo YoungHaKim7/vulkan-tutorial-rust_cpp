@@ -87,6 +87,7 @@ If you find a mistake in any of the reference guides, please submit a bug.](http
   - https://vkguide.dev/docs/extra-chapter/multithreading/
   - https://en.wikipedia.org/wiki/Vulkan
     - 한글 설명서
+      - https://vkguide.dev/docs/ko
 
 - OpenGL
   - https://en.wikipedia.org/wiki/OpenGL
