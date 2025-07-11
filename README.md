@@ -49,6 +49,58 @@
 
 <hr>
 
+# Vulkan Linux에서 환경설정
+
+- 1. GPU 드라이버 설치
+- NVIDIA 의 경우
+```bash
+
+$ sudo apt update
+
+$ sudo ubuntu-drivers 
+
+$ devicessudo ubuntu-drivers autoinstall
+
+```
+
+- AMD/Intel의 경우에는 Mesa 드라이버가 기본적으로 제공되며 mesa-utils 설치 후 glxinfo로 상태를 확인할 수 있습니다.
+
+- 2. Vulkan SDK 설치:기본 패키지:
+
+```bash
+
+$ sudo apt update
+
+$ sudo apt install 
+
+$ vulkan-utils libvulkan-dev
+
+# 이것만으로도 헤더, 기본 유틸이 설치되지만, 최신 Validation Layer나 추가 툴 활용을 위해서는 LunarG Vulkan SDK를 추천합니다.
+# LunarG Vulkan SDK에서 Linux용 SDK 다운로드 후:
+
+$ tar -xvf vulkansdk-linux-x86_64-<version>.tar.gz
+
+$ cd vulkan-sdk-<version>/
+
+$ source setup-env.sh
+# 이렇게 환경 변수를 설정하면 헤더, 라이브러리, Validation Layer 등을 활용할 수 있습니다. .bashrc나 .zshrc에 추가해두면 매번 설정할 필요가 없습니다.
+ 
+```
+
+# 3. CMake, Git, SPIR-V 툴 설치:
+
+```bash
+$ sudo apt install cmake git
+# SPIR-V 관련 툴(glslc 등)은 LunarG SDK에 포함되어 있습니다.
+ 
+# 설치 후 vulkaninfo 명령을 통해 GPU 디바이스 정보가 정상적으로 출력된다면 환경이 제대로 갖춰진 것입니다.
+# CUDA와 비교하면 CUDA는 NVIDIA GPU에 특화된 툴킷 하나로 정리되는 반면, Vulkan은 GPU 벤더 중립적이므로 드라이버, SDK를 따로 세팅해야 하지만, 그만큼 다양한 하드웨어 지원이 가능합니다.
+
+```
+- https://www.lunarg.com/vulkan-sdk/
+
+- 출처: https://nodiscard.tistory.com/257 [Yak Shaving: 야크 털 깎기:티스토리]
+
 # Vulkan(API)[|🔝|](#link)
 
 - [Vulkan API docs문서(API찾을때 굿](https://docs.vulkan.org/spec/latest/index.html)
