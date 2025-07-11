@@ -65,6 +65,11 @@ $ devicessudo ubuntu-drivers autoinstall
 
 - AMD/Intel의 경우에는 Mesa 드라이버가 기본적으로 제공되며 mesa-utils 설치 후 glxinfo로 상태를 확인할 수 있습니다.
 
+```bash
+# glxinfo 명령어 쓰려면 설치해야함.
+$ sudo apt install mesa-utils
+```
+
 - 2. Vulkan SDK 설치:기본 패키지:
 
 ```bash
@@ -74,6 +79,10 @@ $ sudo apt update
 $ sudo apt install 
 
 $ vulkan-utils libvulkan-dev
+
+$ sudo apt update
+$ sudo apt install vulkan-sdk
+# https://vulkan.lunarg.com/sdk/home#linux 
 
 # 이것만으로도 헤더, 기본 유틸이 설치되지만, 최신 Validation Layer나 추가 툴 활용을 위해서는 LunarG Vulkan SDK를 추천합니다.
 # LunarG Vulkan SDK에서 Linux용 SDK 다운로드 후:
