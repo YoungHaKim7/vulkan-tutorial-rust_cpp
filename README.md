@@ -28,6 +28,9 @@
   - [(외부링크)English ver. VulkanAPI 설명서_https://vkguide.dev/](https://vkguide.dev/)
   - [(외부링크)한글 ver. VulkanAPI 설명서_https://vkguide.dev/docs/ko](https://vkguide.dev/docs/ko)
 
+- https://github.com/KhronosGroup/Vulkan-Docs 
+  - 한국사람이 잘 정리 https://nodiscard.tistory.com/257
+
 <hr />
 
 - [Vulkan VS. OpenGL 차이점 이해](#vulkan-vs-opengl)
@@ -80,6 +83,7 @@ $ sudo apt install
 
 $ vulkan-utils libvulkan-dev
 
+# 난 sudo apt install 함
 $ sudo apt update
 $ sudo apt install vulkan-sdk
 # https://vulkan.lunarg.com/sdk/home#linux 
