@@ -12,6 +12,8 @@
 - 기초 개념 잡기
   - [Shader](#shader)
 
+- https://github.com/SaschaWillems/Vulkan
+
 
 <hr />
 
@@ -79,9 +81,7 @@ $ sudo apt install mesa-utils
 
 $ sudo apt update
 
-$ sudo apt install 
-
-$ vulkan-utils libvulkan-dev
+$ sudo apt install vulkan-utils libvulkan-dev
 
 # 난 sudo apt install 함
 $ sudo apt update
@@ -306,3 +306,7 @@ If you find a mistake in any of the reference guides, please submit a bug.](http
 - `VkSwapchainKHR` : Holds the images for the screen. It allows you to render things into a visible window. The KHR suffix shows that it comes from an extension, which in this case is VK_KHR_swapchain
 - `VkSemaphore` : Synchronizes GPU to GPU execution of commands. Used for syncing multiple command buffer submissions one after other.
 - `VkFence` : Synchronizes GPU to CPU execution of commands. Used to know if a command buffer has finished being executed on the GPU.
+
+# vulkan-loader
+
+- https://github.com/KhronosGroup/Vulkan-Loader/blob/main/docs/LoaderInterfaceArchitecture.md#vkconfig
