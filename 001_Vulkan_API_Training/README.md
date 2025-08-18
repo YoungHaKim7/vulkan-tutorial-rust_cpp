@@ -15,6 +15,8 @@
 - https://devpost.com/software/vartip
 - https://gpuopen.com/news/v-ez-brings-easy-mode-vulkan/
 
+- [(외부 유튜브링크)Intro to Graphics Programming (What it is and where to start) | the lemon](https://youtu.be/Jw-g_Zrz4Ys?si=8XJXJN5yuYM1Z7Qa)
+
 # Vulkan
 
 <img src="../assets/gallery.jpg" />
