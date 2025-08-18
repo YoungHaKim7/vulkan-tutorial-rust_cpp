@@ -3,5 +3,11 @@
 - https://gpuopen.com/news/v-ez-brings-easy-mode-vulkan/
 
 # Figure 1 - Vulkan API
+- https://gpuopen.com/news/v-ez-brings-easy-mode-vulkan/
 
 <img src="https://gpuopen.com/_astro/Vulkan-API.5U2CF-Xw.png" />
+
+# Figure 2- V-EZ middleware layer
+- https://gpuopen.com/news/v-ez-brings-easy-mode-vulkan/
+  
+<img src="https://gpuopen.com/_astro/v-ez-middleware-layer.Bd0HXc9Q.png" />
