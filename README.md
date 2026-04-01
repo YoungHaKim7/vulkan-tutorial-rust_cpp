@@ -109,6 +109,17 @@ $ source setup-env.sh
  
 ```
 
+- 내 맘대로 path수정(SDK path)
+  - https://vulkan.lunarg.com/doc/sdk/1.4.341.1/linux/getting_started.html
+
+```bash
+export VULKAN_SDK=~/vulkan/1.x.yy.z/x86_64
+export PATH=$VULKAN_SDK/bin:$PATH
+export LD_LIBRARY_PATH=$VULKAN_SDK/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+export VK_ADD_LAYER_PATH=$VULKAN_SDK/share/vulkan/explicit_layer.d
+export PKG_CONFIG_PATH=$VULKAN_SDK/share/pkgconfig:$VULKAN_SDK/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
+```
+
 # 3. CMake, Git, SPIR-V 툴 설치:
 
 ```bash
