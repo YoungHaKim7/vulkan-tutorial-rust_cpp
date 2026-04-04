@@ -6,6 +6,15 @@
 
 #include "external/wyhash.h"
 
+// Platform-specific SIMD includes
+#if defined(__aarch64__) || defined(__arm64__) || defined(_M_ARM64)
+#include <arm_neon.h>
+#define RAPTOR_ARM_NEON 1
+#elif defined(__x86_64__) || defined(_M_X64) || defined(__i386__)
+#include <immintrin.h>
+#define RAPTOR_SSE2 1
+#endif
+
 namespace raptor {
 
 // Hash Map /////////////////////////////////////////////////////////////////
@@ -195,18 +204,32 @@ struct GroupSse2Impl {
   static constexpr size_t kWidth = 16; // the number of slots per group
 
   explicit GroupSse2Impl(const i8 *pos) {
+#if defined(RAPTOR_ARM_NEON)
+    ctrl = vld1q_s8(pos);
+#else
     ctrl = _mm_loadu_si128(reinterpret_cast<const __m128i *>(pos));
+#endif
   }
 
   // Returns a bitmask representing the positions of slots that match hash.
   BitMask<uint32_t, kWidth> Match(i8 hash) const {
+#if defined(RAPTOR_ARM_NEON)
+    int8x16_t match = vdupq_n_s8(hash);
+    int8x16_t cmp = vceqq_s8(ctrl, match);
+    uint8x16_t mask = vshrq_n_u8(vreinterpretq_u8_s8(cmp), 7);
+    return BitMask<uint32_t, kWidth>(vaddvq_u32(vreinterpretq_u32_u8(mask)));
+#else
     auto match = _mm_set1_epi8(hash);
     return BitMask<uint32_t, kWidth>(
         _mm_movemask_epi8(_mm_cmpeq_epi8(match, ctrl)));
+#endif
   }
 
   // Returns a bitmask representing the positions of empty slots.
   BitMask<uint32_t, kWidth> MatchEmpty() const {
+#if defined(RAPTOR_ARM_NEON)
+    return Match(static_cast<i8>(k_control_bitmask_empty));
+#else
 #if ABSL_INTERNAL_RAW_HASH_SET_HAVE_SSSE3
     // This only works because kEmpty is -128.
     return BitMask<uint32_t, kWidth>(
@@ -214,23 +237,48 @@ struct GroupSse2Impl {
 #else
     return Match(static_cast<i8>(k_control_bitmask_empty));
 #endif
+#endif
   }
 
   // Returns a bitmask representing the positions of empty or deleted slots.
   BitMask<uint32_t, kWidth> MatchEmptyOrDeleted() const {
+#if defined(RAPTOR_ARM_NEON)
+    int8x16_t special = vdupq_n_s8(k_control_bitmask_sentinel);
+    int8x16_t cmp = vcgtq_s8(special, ctrl);
+    uint8x16_t mask = vshrq_n_u8(vreinterpretq_u8_s8(cmp), 7);
+    uint32_t result = vaddvq_u32(vreinterpretq_u32_u8(mask));
+    return BitMask<uint32_t, kWidth>(result);
+#else
     auto special = _mm_set1_epi8(k_control_bitmask_sentinel);
     return BitMask<uint32_t, kWidth>(
         _mm_movemask_epi8(_mm_cmpgt_epi8(special, ctrl)));
+#endif
   }
 
   // Returns the number of trailing empty or deleted elements in the group.
   uint32_t CountLeadingEmptyOrDeleted() const {
+#if defined(RAPTOR_ARM_NEON)
+    int8x16_t special = vdupq_n_s8(k_control_bitmask_sentinel);
+    int8x16_t cmp = vcgtq_s8(special, ctrl);
+    uint8x16_t mask = vshrq_n_u8(vreinterpretq_u8_s8(cmp), 7);
+    uint32_t result = vaddvq_u32(vreinterpretq_u32_u8(mask));
+    return trailing_zeros_u32(result + 1);
+#else
     auto special = _mm_set1_epi8(k_control_bitmask_sentinel);
     return trailing_zeros_u32(static_cast<uint32_t>(
         _mm_movemask_epi8(_mm_cmpgt_epi8(special, ctrl)) + 1));
+#endif
   }
 
   void ConvertSpecialToEmptyAndFullToDeleted(i8 *dst) const {
+#if defined(RAPTOR_ARM_NEON)
+    int8x16_t msbs = vdupq_n_s8(static_cast<char>(-128));
+    int8x16_t x126 = vdupq_n_s8(126);
+    int8x16_t zero = vdupq_n_s8(0);
+    int8x16_t special_mask = vreinterpretq_s8_u8(vcgtq_s8(zero, ctrl));
+    int8x16_t res = vorrq_s8(msbs, vbicq_s8(x126, special_mask));
+    vst1q_s8(dst, res);
+#else
     auto msbs = _mm_set1_epi8(static_cast<char>(-128));
     auto x126 = _mm_set1_epi8(126);
 #if ABSL_INTERNAL_RAW_HASH_SET_HAVE_SSSE3
@@ -241,9 +289,14 @@ struct GroupSse2Impl {
     auto res = _mm_or_si128(msbs, _mm_andnot_si128(special_mask, x126));
 #endif
     _mm_storeu_si128(reinterpret_cast<__m128i *>(dst), res);
+#endif
   }
 
+#if defined(RAPTOR_ARM_NEON)
+  int8x16_t ctrl;
+#else
   __m128i ctrl;
+#endif
 };
 
 // Capacity ///////////////////////////////////////////////////////////

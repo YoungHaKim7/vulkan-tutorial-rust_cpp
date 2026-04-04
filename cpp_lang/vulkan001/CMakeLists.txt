@@ -76,7 +76,16 @@ set(SOURCES
 
     # External: Tracy profiler
     external/tracy/TracyClient.cpp
+
+    # External: TLSF memory allocator
+    external/tlsf.c
 )
+
+# External: ImGui sources
+file(GLOB IMGUI_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/imgui/*.cpp
+)
+list(APPEND SOURCES ${IMGUI_SOURCES})
 
 # Graphics source files (if folder exists)
 if(EXISTS ${RAPTOR_GRAPHICS_PATH})

@@ -35,7 +35,7 @@
 #if defined(_MSC_VER) && defined(_M_X64)
 #include <intrin.h>
 #pragma intrinsic(_umul128)
-#else
+#elif defined(__x86_64__) || defined(_M_X64) || defined(__i386__)
 #include <immintrin.h>
 #endif
 
