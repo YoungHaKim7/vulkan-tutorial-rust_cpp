@@ -8,6 +8,7 @@
 #ifndef cglm_simd_x86_h
 #define cglm_simd_x86_h
 #include "intrin.h"
+#include "../types.h"
 #ifdef CGLM_SIMD_x86
 
 #ifdef CGLM_ALL_UNALIGNED

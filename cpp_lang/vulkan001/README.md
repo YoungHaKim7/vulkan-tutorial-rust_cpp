@@ -22,3 +22,5 @@ cmake --build .
 4. **ARM64 NEON intrinsics** - Added ARM NEON SIMD support to `raptor/foundation/hash_map.hpp` as an alternative to SSE2 for Apple Silicon
 
 5. **Missing sources** - Added `external/tlsf.c` and ImGui sources to `CMakeLists.txt`
+- Build fixed. The issue was cglm's `x86.h` using `CGLM_CASTPTR_ASSUME_ALIGNED` macro before it was defined. Added `#include "../types.h"` to x86.h:10.
+- Build succeeded. The issue was a stale cmake cache with an incorrect `RAPTOR_GRAPHICS_PATH`. The executable has been built at `bin/vulkan001`.
