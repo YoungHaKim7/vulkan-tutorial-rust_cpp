@@ -1,6 +1,18 @@
 # Build
 
 ```bash
+  mkdir -p build && cd build
+  cmake ..
+  make -j$(nproc)
+
+  Or if the build directory already exists:
+
+  cd build
+  cmake ..
+  make -j$(nproc)
+```
+
+```bash
 mkdir build && cd build
 cmake -DRAPTOR_GRAPHICS_PATH=/path/to/graphics ..
 cmake --build .
