@@ -5,6 +5,10 @@
   - https://faultlore.com/blah/hashbrown-tldr/
   - [유튜브 영상171027) CppCon 2017: Matt Kulukundis “Designing a Fast, Efficient, Cache-friendly Hash Table, Step by Step” ](https://youtu.be/ncHmEUmJZf4?si=VPhDWCb-cuRBbOV-)
 
+- C++ std기초
+  - fopen
+    - https://cplusplus.com/reference/cstdio/fopen/
+
 <hr />
 
 # Vulkan API 설명서
