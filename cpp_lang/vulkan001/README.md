@@ -36,3 +36,18 @@ cmake --build .
 5. **Missing sources** - Added `external/tlsf.c` and ImGui sources to `CMakeLists.txt`
 - Build fixed. The issue was cglm's `x86.h` using `CGLM_CASTPTR_ASSUME_ALIGNED` macro before it was defined. Added `#include "../types.h"` to x86.h:10.
 - Build succeeded. The issue was a stale cmake cache with an incorrect `RAPTOR_GRAPHICS_PATH`. The executable has been built at `bin/vulkan001`.
+
+# fix (최종)
+- That was from an earlier background task. The issue has been resolved - the application now runs successfully with:
+
+```bash
+export VULKAN_SDK="$HOME/vulkan-sdk"
+./vulkan001 ./Box.gltf
+```
+
+The key fixes were:
+1. **Created `~/vulkan-sdk/bin/glslangValidator`** - a wrapper script that translates glslangValidator options to glslc commands
+2. **Set `VULKAN_SDK` environment variable** - points to the directory containing the wrapper script
+3. **Use `./` prefix** - the glTF file path needs a directory separator (e.g., `./Box.gltf` not `Box.gltf`)
+
+The environment variable has been added to your shell config for persistence.
