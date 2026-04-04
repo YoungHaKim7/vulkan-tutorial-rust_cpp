@@ -3,6 +3,7 @@
 - https://github.com/PacktPublishing/Mastering-Graphics-Programming-with-Vulkan
 - Hashbrown
   - https://faultlore.com/blah/hashbrown-tldr/
+  - [유튜브 영상171027) CppCon 2017: Matt Kulukundis “Designing a Fast, Efficient, Cache-friendly Hash Table, Step by Step” ](https://youtu.be/ncHmEUmJZf4?si=VPhDWCb-cuRBbOV-)
 
 <hr />
 
