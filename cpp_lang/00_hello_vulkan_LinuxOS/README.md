@@ -160,7 +160,6 @@ cro3:
 	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
 	./build/{{target}}
 
-
 # C++ init
 init:
 	mkdir -p src
