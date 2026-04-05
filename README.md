@@ -35,6 +35,9 @@
 
 <hr />
 
+- Khronos-reference front end for GLSL/ESSL, partial front end for HLSL, and a SPIR-V generator. 
+  - https://github.com/khronosGroup/glslang
+
 - [Vulkan VS. OpenGL 차이점 이해](#vulkan-vs-opengl)
 
 <hr />
