@@ -19,11 +19,11 @@ elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
 endif()
 
 # Source files
-add_executable(main src/main.cpp)
+add_executable(${ProjectId} src/main.cpp)
 
 # Link libraries
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-    target_link_libraries(main
+    target_link_libraries(${ProjectId}
         glfw
         vulkan
         dl
@@ -31,7 +31,7 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
         pthread
     )
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
-    target_link_libraries(main
+    target_link_libraries(${ProjectId}
         glfw
         vulkan
         "-framework Cocoa"
@@ -41,7 +41,7 @@ elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
 endif()
 
 # Set output directory
-set_target_properties(main PROPERTIES
+set_target_properties(${ProjectId} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/target"
 )
 
