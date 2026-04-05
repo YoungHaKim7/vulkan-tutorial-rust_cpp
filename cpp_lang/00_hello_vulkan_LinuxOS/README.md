@@ -2,7 +2,13 @@
 - You need to install GLFW development libraries. Run:
 
 ```bash
-sudo zypper install libglfw-devel
+sudo zypper install libglfw-devel glm-devel libglfw-devel
+
+# Vulkan Install
+sudo zypper in libvulkan1 libvulkan1-32bit \
+libvulkan_intel libvulkan_intel-32bit \
+libvulkan_radeon libvulkan_radeon-32bit \
+vulkan-tools
 ```
 
 After installing, the build should work. The justfile and CMakeLists.txt have been updated to:
@@ -10,7 +16,7 @@ After installing, the build should work. The justfile and CMakeLists.txt have be
 2. Link with Linux-specific libraries (`dl`, `X11`, `pthread`) instead of macOS frameworks
 3. Skip `DYLD_LIBRARY_PATH` on Linux since system libraries are in standard paths
 
-# justfile(macOS)
+# justfile(macOS & LinuxOS)
 
 ```justfile
 # Detect OS
