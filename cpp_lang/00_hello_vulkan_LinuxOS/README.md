@@ -4,6 +4,9 @@
 ```bash
 sudo zypper install libglfw-devel glm-devel libglfw-devel
 
+# LinuxOS
+sudo zypper in wayland-protocols-devel
+
 # Vulkan Install
 sudo zypper in libvulkan1 libvulkan1-32bit \
 libvulkan_intel libvulkan_intel-32bit \
