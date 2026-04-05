@@ -19,6 +19,9 @@ After installing, the build should work. The justfile and CMakeLists.txt have be
 # justfile(macOS & LinuxOS)
 
 ```justfile
+# project name
+project_name := `basename "$(pwd)"`
+
 # Detect OS
 os := `uname`
 
@@ -102,14 +105,13 @@ fm_flags := "-e c \
   +clang_format+  \
   " -style=file -i {} \\;"
 	
-
 # g++ compile
 r:
 	just fm
 	rm -rf target
 	mkdir -p target
-	g++ {{cflags}} -o {{target}} {{source}} {{ldflags}}
-	if [ "{{os}}" = "Darwin" ]; then DYLD_LIBRARY_PATH=/opt/homebrew/lib {{target}}; else {{target}}; fi
+	g++ {{cflags}} -o target/{{project_name}} {{source}} {{ldflags}}
+	if [ "{{os}}" = "Darwin" ]; then DYLD_LIBRARY_PATH=/opt/homebrew/lib target/{{project_name}}; else target/{{project_name}}; fi
 
 # .clang-format fmt(LinuxOS/ macOS)
 fmt:
@@ -132,7 +134,7 @@ cr:
 	cmake -D CMAKE_CXX_COMPILER={{gpp_which}} -G Ninja .
 	ninja
 	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
-	./build/{{target}}
+	./build/target/{{project_name}}
 
 # cmake compile(LinuxOS)
 cro:
