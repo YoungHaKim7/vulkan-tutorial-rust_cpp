@@ -150,6 +150,9 @@ OpenGL ES profile shading language version string: OpenGL ES GLSL ES 3.20
 OpenGL ES profile extensions:
 ```
 
+- SDK Install
+- https://vulkan.lunarg.com/sdk/home#linux
+
 # 3. CMake, Git, SPIR-V 툴 설치:
 
 ```bash
