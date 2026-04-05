@@ -28,8 +28,21 @@ source := src_dir+"/main.cpp"
 target := target_dir+"/main"
 
 # Common flags
-cflags := "-std=c++17 -O2 -I/opt/homebrew/include"
-ldflags := "-L/opt/homebrew/lib -lglfw -lvulkan -framework Cocoa -framework IOKit -framework CoreVideo"
+cflags := if os == "Linux" { \
+    "-std=c++17 -O2 -I/usr/include" \
+  } else if os == "Darwin" { \
+    "-std=c++17 -O2 -I/opt/homebrew/include" \
+  } else { \
+    "-std=c++17 -O2 -I/usr/local/include" \
+  }
+
+ldflags := if os == "Linux" { \
+    "-lglfw -lvulkan -ldl -lX11 -lpthread" \
+  } else if os == "Darwin" { \
+    "-L/opt/homebrew/lib -lglfw -lvulkan -framework Cocoa -framework IOKit -framework CoreVideo" \
+  } else { \
+    "-lglfw -lvulkan" \
+  }
 ldflags_emit_llvm := "-S -emit-llvm"
 ldflags_assembly := "-Wall -save-temps"
 ldflags_fsanitize_address := "-O1 -g -fsanitize=address -fno-omit-frame-pointer -c"
@@ -90,7 +103,7 @@ r:
 	rm -rf target
 	mkdir -p target
 	g++ {{cflags}} -o {{target}} {{source}} {{ldflags}}
-	DYLD_LIBRARY_PATH=/opt/homebrew/lib {{target}}
+	if [ "{{os}}" = "Darwin" ]; then DYLD_LIBRARY_PATH=/opt/homebrew/lib {{target}}; else {{target}}; fi
 
 # .clang-format fmt(LinuxOS/ macOS)
 fmt:
