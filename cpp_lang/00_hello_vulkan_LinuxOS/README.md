@@ -6,6 +6,7 @@ sudo zypper install libglfw-devel glm-devel libglfw-devel
 
 # LinuxOS
 sudo zypper in wayland-protocols-devel liblz4-devel
+sudo zypper install 'pkgconfig(xcb-keysyms)'
 
 # Vulkan Install
 sudo zypper in libvulkan1 libvulkan1-32bit \
