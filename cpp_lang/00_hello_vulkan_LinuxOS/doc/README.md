@@ -35,3 +35,8 @@ The justfile ran `cmake .` **in-source** (polluting the repo with `build.ninja`,
 ## Verification
 
 `just cr` ran clean: configure → build → app launched (printed via the render loop; it's a windowed Vulkan app, so the recipe blocks until you close the window — same as before). `build/` contains everything, and no in-source artifacts remain.
+
+# Cmake fix
+- Build verified — the binary is at `target/target/00_hello_vulkan_LinuxOS`, matching the fixed recipe. `just cr` should now work end to end.
+
+- One minor note: the `VKB_WSI_SELECTION=WAYLAND` warning means your CMakeLists doesn't use that variable (it's for vulkan-bootstrap's WSI, and your project links GLFW instead). Harmless — you can drop that `-D` flag if you want a clean configure.
