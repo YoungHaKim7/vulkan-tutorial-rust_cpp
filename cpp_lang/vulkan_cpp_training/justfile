@@ -1,33 +1,143 @@
+# project name
+project_name := `basename "$(pwd)"`
+
+# Detect OS
+os := `uname`
+
 # which g++
 gpp_which := `which g++`
 
 # Source and target directories
-src_dir := "./src"
-target_dir := "./target"
+src_dir := "src"
+target_dir := "target"
 
 # Files
-source := src_dir+"/main.cpp"
-target := target_dir+"/main"
+source := src_dir+"main.cpp"
+target := target_dir+"main"
 
 # Common flags
-cflags := "-std=c++17 -O2"
-ldflags := "-lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -lXi -fext-numeric-literals"
+cflags := if os == "Linux" { \
+    "-std=c++20 -O2 -I/usr/include" \
+  } else if os == "Darwin" { \
+    "-std=c++20 -O2 -I/opt/homebrew/include" \
+  } else { \
+    "-std=c++20 -O2 -I/usr/local/include" \
+  }
+
+ldflags := if os == "Linux" { \
+    "-lglfw -lvulkan -ldl -lX11 -lpthread" \
+  } else if os == "Darwin" { \
+    "-L/opt/homebrew/lib -lglfw -lvulkan -framework Cocoa -framework IOKit -framework CoreVideo" \
+  } else { \
+    "-lglfw -lvulkan" \
+  }
 ldflags_emit_llvm := "-S -emit-llvm"
 ldflags_assembly := "-Wall -save-temps"
 ldflags_fsanitize_address := "-O1 -g -fsanitize=address -fno-omit-frame-pointer -c"
 ldflags_fsanitize_object := "-g -fsanitize=address"
 ldflags_fsanitize_valgrind := "-fsanitize=address -g3 -std=c++2b"
 
+clang_format_basic := `which clang-format`
+cmake := `which cmake`
+
+# clang-format 21
+clang_format := if os == "Linux" { \
+	clang_format_basic \
+  } else if os == "Darwin" { \
+    "/opt/homebrew/opt/llvm/bin/clang-format" \
+  } else { \
+    clang_format_basic \
+  }
+
+# fmt .clang-format(linuxOS / macOS)
+fmt_flags := if os == "Linux" { \
+    ". -regex '.*\\.\\(cpp\\|hpp\\|cc\\|cxx\\|ixx\\|cppm\\|c\\|h\\)' -exec " \
+    +clang_format+ \
+    " -style=file -i {} \\;" \
+  } else if os == "Darwin" { \
+    ". -iname '*.cpp' \
+    -o -iname '*.hpp' \
+    -o -iname '*.cc' \
+    -o -iname '*.c' \
+    -o -iname '*.cxx' \
+    -o -iname '*.cppm' \
+    -o -iname '*.ixx' \
+    -o -iname '*.c' \
+    -o -iname '*.h' | " \
+    +clang_format+ \
+    " -style=file -i --files=/dev/stdin" \
+  } else { \
+    ". -regex '.*\\.\\(cpp\\|hpp\\|cc\\|cxx\\|c\\|h\\)' -exec " \
+    +clang_format+ \
+    " -style=file -i {} \\;" \
+  }  
+
+# fast fmt(LinuxOS / macOS)(Install "cargo install fd-find")
+fm_flags := "-e c \
+  -e h \
+  -e cpp \
+  -e hpp \
+  -e cppm \
+  -e ixx \
+  -e cc \
+  -e cxx -x " \
+  +clang_format+  \
+  " -style=file -i {} \\;"
+	
 # g++ compile
 r:
+	just fm
 	rm -rf target
 	mkdir -p target
-	g++ {{cflags}} -o {{target}} {{source}} {{ldflags}}
-	{{target}}
+	g++ {{cflags}} -o target/{{project_name}} {{source}} {{ldflags}}
+	if [ "{{os}}" = "Darwin" ]; then DYLD_LIBRARY_PATH=/opt/homebrew/lib target/{{project_name}}; else target/{{project_name}}; fi
+
+# .clang-format fmt(LinuxOS/ macOS)
+fmt:
+	find {{fmt_flags}}
+
+# (fast).clang-format fmt(cargo install fd-find)(LinuxOS / macOS)
+fm:
+	fd {{fm_flags}}
 
 # clean files
 clean:
 	rm -rf {{target_dir}} *.out {{src_dir}}/*.out *.bc {{src_dir}}/target/ *.dSYM {{src_dir}}/*.dSYM *.i *.o *.s
+
+# cmake compile(LinuxOS)
+cr:
+	just fm
+	rm -rf {{target_dir}}
+	cmake -B {{target_dir}} \
+		  -G Ninja \
+		  -D CMAKE_CXX_COMPILER={{gpp_which}} \
+		  -D CMAKE_BUILD_TYPE=Debug \
+		  -D VKB_WSI_SELECTION=WAYLAND
+	cmake --build {{target_dir}}
+	./{{target_dir}}/debug/{{project_name}}
+
+# cmake compile(LinuxOS)
+cro:
+	just fm
+	rm -rf {{target_dir}}
+	cmake -B {{target_dir}} \
+		  -G Ninja \
+	      -D CMAKE_BUILD_TYPE=RelWithDebInfo \
+	      -D CMAKE_CXX_COMPILER={{gpp_which}} \
+		  -D VKB_WSI_SELECTION=WAYLAND \
+	      -D CMAKE_CXX_FLAGS_RELWITHDEBINFO_INIT="-O2 -g"
+	cmake --build {{target_dir}}
+	./{{target_dir}}/relwithdebinfo/{{project_name}}
+
+# cmake compile(LinuxOS)
+cro3:
+	rm -rf build
+	cmake -B build -G Ninja \
+	      -D CMAKE_BUILD_TYPE=Release \
+	      -D CMAKE_CXX_COMPILER={{gpp_which}} \
+	      -D CMAKE_CXX_FLAGS_RELEASE_INIT="-O3 -DNDEBUG"
+	cmake --build build
+	./build/target/{{project_name}}
 
 # C++ init
 init:
@@ -109,4 +219,3 @@ vscode:
 	echo '    ],' >> .vscode/tasks.json
 	echo '    "version": "2.0.0"' >> .vscode/tasks.json
 	echo '}' >> .vscode/tasks.json
-
