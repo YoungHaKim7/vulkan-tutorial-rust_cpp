@@ -35,31 +35,34 @@ project_name := `basename "$(pwd)"`
 os := `uname`
 
 # which g++
-gpp_which := `which g++`
+gcc_which := `which gcc`
 
 # Source and target directories
-src_dir := "./src"
-target_dir := "./target"
+src_dir := "src"
+target_dir := "target"
 
 # Files
-source := src_dir+"/main.cpp"
-target := target_dir+"/main"
+source := src_dir+"main.c"
+target := target_dir+"main"
+
+# wgpu-native ffi (vendored headers + prebuilt library)
+wgpu_ffi := "include/vendor/ffi"
 
 # Common flags
 cflags := if os == "Linux" { \
-    "-std=c++17 -O2 -I/usr/include" \
+    "-std=c11 -O2 -I/usr/include -I"+wgpu_ffi+" -I"+wgpu_ffi+"/webgpu-headers -Iinclude/framework" \
   } else if os == "Darwin" { \
-    "-std=c++17 -O2 -I/opt/homebrew/include" \
+    "-std=c11 -O2 -I/opt/homebrew/include -I"+wgpu_ffi+" -I"+wgpu_ffi+"/webgpu-headers -Iinclude/framework" \
   } else { \
-    "-std=c++17 -O2 -I/usr/local/include" \
+    "-std=c11 -O2 -I/usr/local/include -I"+wgpu_ffi+" -I"+wgpu_ffi+"/webgpu-headers -Iinclude/framework" \
   }
 
 ldflags := if os == "Linux" { \
-    "-lglfw -lvulkan -ldl -lX11 -lpthread" \
+    "-L"+wgpu_ffi+"/lib -lwgpu_native include/framework/framework.c -lglfw -ldl -lX11 -lpthread -lm" \
   } else if os == "Darwin" { \
-    "-L/opt/homebrew/lib -lglfw -lvulkan -framework Cocoa -framework IOKit -framework CoreVideo" \
+    "-L/opt/homebrew/lib -L"+wgpu_ffi+"/lib -lwgpu_native include/framework/framework.c -lglfw -framework Cocoa -framework IOKit -framework CoreVideo" \
   } else { \
-    "-lglfw -lvulkan" \
+    "-L"+wgpu_ffi+"/lib -lwgpu_native include/framework/framework.c -lglfw" \
   }
 ldflags_emit_llvm := "-S -emit-llvm"
 ldflags_assembly := "-Wall -save-temps"
@@ -72,7 +75,7 @@ cmake := `which cmake`
 
 # clang-format 21
 clang_format := if os == "Linux" { \
-    "clang-format-21" \
+	clang_format_basic \
   } else if os == "Darwin" { \
     "/opt/homebrew/opt/llvm/bin/clang-format" \
   } else { \
@@ -103,7 +106,8 @@ fmt_flags := if os == "Linux" { \
   }  
 
 # fast fmt(LinuxOS / macOS)(Install "cargo install fd-find")
-fm_flags := "-e c \
+fm_flags := "-E vendor \
+  -e c \
   -e h \
   -e cpp \
   -e hpp \
@@ -114,13 +118,14 @@ fm_flags := "-e c \
   +clang_format+  \
   " -style=file -i {} \\;"
 	
-# g++ compile
+# gcc compile
 r:
 	just fm
 	rm -rf target
 	mkdir -p target
-	g++ {{cflags}} -o target/{{project_name}} {{source}} {{ldflags}}
-	if [ "{{os}}" = "Darwin" ]; then DYLD_LIBRARY_PATH=/opt/homebrew/lib target/{{project_name}}; else target/{{project_name}}; fi
+	gcc {{cflags}} -o target/{{project_name}} {{source}} {{ldflags}}
+	cp src/shader.wgsl target/
+	if [ "{{os}}" = "Darwin" ]; then cd target && DYLD_LIBRARY_PATH=/opt/homebrew/lib ./{{project_name}}; else cd target && LD_LIBRARY_PATH=../{{wgpu_ffi}}/lib ./{{project_name}}; fi
 
 # .clang-format fmt(LinuxOS/ macOS)
 fmt:
@@ -137,37 +142,35 @@ clean:
 # cmake compile(LinuxOS)
 cr:
 	just fm
-	rm -rf build
-	mkdir -p build
-	export CXX={{gpp_which}}
-	cmake -D CMAKE_CXX_COMPILER={{gpp_which}} -G Ninja .
-	ninja
-	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
-	./build/target/{{project_name}}
+	rm -rf {{target_dir}}
+	cmake -B {{target_dir}} \
+		  -G Ninja \
+		  -D CMAKE_C_COMPILER={{gcc_which}} \
+		  -D CMAKE_BUILD_TYPE=Debug
+	cmake --build {{target_dir}}
+	cd {{target_dir}}/debug && ./{{project_name}}
 
 # cmake compile(LinuxOS)
 cro:
-	rm -rf build
-	mkdir -p build
-	cmake -D CMAKE_BUILD_TYPE=RelWithDebInfo \
-	      -D CMAKE_CXX_COMPILER={{gpp_which}} \
-	      -D CMAKE_CXX_FLAGS_RELWITHDEBINFO_INIT="-O2 -g" \
-	      -G Ninja .
-	ninja
-	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
-	./build/{{target}}
+	just fm
+	rm -rf {{target_dir}}
+	cmake -B {{target_dir}} \
+		  -G Ninja \
+	      -D CMAKE_BUILD_TYPE=RelWithDebInfo \
+	      -D CMAKE_C_COMPILER={{gcc_which}} \
+	      -D CMAKE_C_FLAGS_RELWITHDEBINFO_INIT="-O2 -g"
+	cmake --build {{target_dir}}
+	cd {{target_dir}}/relwithdebinfo && ./{{project_name}}
 
 # cmake compile(LinuxOS)
 cro3:
 	rm -rf build
-	mkdir -p build
-	cmake -D CMAKE_BUILD_TYPE=Release \
-	      -D CMAKE_CXX_COMPILER={{gpp_which}} \
-	      -D CMAKE_CXX_FLAGS_RELEASE_INIT="-O3 -DNDEBUG" \
-	      -G Ninja .
-	ninja
-	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
-	./build/{{target}}
+	cmake -B build -G Ninja \
+	      -D CMAKE_BUILD_TYPE=Release \
+	      -D CMAKE_C_COMPILER={{gcc_which}} \
+	      -D CMAKE_C_FLAGS_RELEASE_INIT="-O3 -DNDEBUG"
+	cmake --build build
+	./build/target/{{project_name}}
 
 # C++ init
 init:
@@ -225,7 +228,7 @@ vscode:
 	echo '        {' >> .vscode/tasks.json
 	echo '            "type": "cppbuild",' >> .vscode/tasks.json
 	echo '            "label": "C/C++: clang build active file",' >> .vscode/tasks.json
-	echo '            "command": "{{gpp_which}}",' >> .vscode/tasks.json
+	echo '            "command": "{{gcc_which}}",' >> .vscode/tasks.json
 	echo '            "args": [' >> .vscode/tasks.json
 	echo '                "-fcolor-diagnostics",' >> .vscode/tasks.json
 	echo '                "-fansi-escape-codes",' >> .vscode/tasks.json
