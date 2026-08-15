@@ -20,7 +20,7 @@ After installing, the build should work. The justfile and CMakeLists.txt have be
 2. Link with Linux-specific libraries (`dl`, `X11`, `pthread`) instead of macOS frameworks
 3. Skip `DYLD_LIBRARY_PATH` on Linux since system libraries are in standard paths
 
-# justfile(macOS & LinuxOS)
+# justfile(macOS & LinuxOS)(260815)
 
 ```justfile
 # project name
@@ -33,20 +33,20 @@ os := `uname`
 gpp_which := `which g++`
 
 # Source and target directories
-src_dir := "./src"
-target_dir := "./target"
+src_dir := "src"
+target_dir := "target"
 
 # Files
-source := src_dir+"/main.cpp"
-target := target_dir+"/main"
+source := src_dir+"main.cpp"
+target := target_dir+"main"
 
 # Common flags
 cflags := if os == "Linux" { \
-    "-std=c++17 -O2 -I/usr/include" \
+    "-std=c++20 -O2 -I/usr/include" \
   } else if os == "Darwin" { \
-    "-std=c++17 -O2 -I/opt/homebrew/include" \
+    "-std=c++20 -O2 -I/opt/homebrew/include" \
   } else { \
-    "-std=c++17 -O2 -I/usr/local/include" \
+    "-std=c++20 -O2 -I/usr/local/include" \
   }
 
 ldflags := if os == "Linux" { \
@@ -67,7 +67,7 @@ cmake := `which cmake`
 
 # clang-format 21
 clang_format := if os == "Linux" { \
-    "clang-format-21" \
+	clang_format_basic \
   } else if os == "Darwin" { \
     "/opt/homebrew/opt/llvm/bin/clang-format" \
   } else { \
@@ -132,37 +132,37 @@ clean:
 # cmake compile(LinuxOS)
 cr:
 	just fm
-	rm -rf build
-	mkdir -p build
-	export CXX={{gpp_which}}
-	cmake -D CMAKE_CXX_COMPILER={{gpp_which}} -G Ninja .
-	ninja
-	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
-	./build/target/{{project_name}}
+	rm -rf {{target_dir}}
+	cmake -B {{target_dir}} \
+		  -G Ninja \
+		  -D CMAKE_CXX_COMPILER={{gpp_which}} \
+		  -D CMAKE_BUILD_TYPE=Debug \
+		  -D VKB_WSI_SELECTION=WAYLAND
+	cmake --build {{target_dir}}
+	./{{target_dir}}/debug/{{project_name}}
 
 # cmake compile(LinuxOS)
 cro:
-	rm -rf build
-	mkdir -p build
-	cmake -D CMAKE_BUILD_TYPE=RelWithDebInfo \
+	just fm
+	rm -rf {{target_dir}}
+	cmake -B {{target_dir}} \
+		  -G Ninja \
+	      -D CMAKE_BUILD_TYPE=RelWithDebInfo \
 	      -D CMAKE_CXX_COMPILER={{gpp_which}} \
-	      -D CMAKE_CXX_FLAGS_RELWITHDEBINFO_INIT="-O2 -g" \
-	      -G Ninja .
-	ninja
-	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
-	./build/{{target}}
+		  -D VKB_WSI_SELECTION=WAYLAND \
+	      -D CMAKE_CXX_FLAGS_RELWITHDEBINFO_INIT="-O2 -g"
+	cmake --build {{target_dir}}
+	./{{target_dir}}/relwithdebinfo/{{project_name}}
 
 # cmake compile(LinuxOS)
 cro3:
 	rm -rf build
-	mkdir -p build
-	cmake -D CMAKE_BUILD_TYPE=Release \
+	cmake -B build -G Ninja \
+	      -D CMAKE_BUILD_TYPE=Release \
 	      -D CMAKE_CXX_COMPILER={{gpp_which}} \
-	      -D CMAKE_CXX_FLAGS_RELEASE_INIT="-O3 -DNDEBUG" \
-	      -G Ninja .
-	ninja
-	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
-	./build/{{target}}
+	      -D CMAKE_CXX_FLAGS_RELEASE_INIT="-O3 -DNDEBUG"
+	cmake --build build
+	./build/target/{{project_name}}
 
 # C++ init
 init:
