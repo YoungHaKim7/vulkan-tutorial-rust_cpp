@@ -129,7 +129,8 @@ endif()
  
 # Set output directory
 set_target_properties(${ProjectId} PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/debug"
+    RUNTIME_OUTPUT_DIRECTORY 
+        "${CMAKE_BINARY_DIR}/$<LOWER_CASE:$<CONFIG>>"
 )
 
 # Optimization flags for Release build (via add_compile_options, keeps CMake's defaults)
