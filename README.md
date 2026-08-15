@@ -14,6 +14,9 @@
 
 - https://github.com/SaschaWillems/Vulkan
 
+- slang
+  - https://shader-slang.org/slang/user-guide/index.html
+
 
 <hr />
 
