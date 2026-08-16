@@ -1,53 +1,30 @@
-No. The **compile/build succeeded** — the **run crashed**:
+Verified — the swap is clean (`libglfw3-dev` stays installed, nothing else affected).
 
+## What was wrong
+
+**Code bug:** `initWindow()` never checked `glfwInit()` or `glfwCreateWindow()`. When window creation fails, `window` stays `NULL` and gets passed to `glfwCreateWindowSurface()`, which hits GLFW's internal `assert(window != NULL)` → abort (exit 134).
+
+**Why it failed on your machine:** your current session is **X11** (`XDG_SESSION_TYPE=x11`, `DISPLAY=:1`, no `WAYLAND_DISPLAY`), but the installed runtime library is `libglfw3-wayland` — Debian/Ubuntu's Wayland-*only* GLFW build (`nm` shows zero X11 symbols in it). So `glfwInit()` failed with `Wayland: Failed to connect to display` (error 65544), silently, since GLFW 3.3 swallows errors unless you install an error callback. Your previous chapters worked because you were in a Wayland session then.
+
+## Fix applied to `src/main.cpp`
+
+- `initWindow()` (`src/main.cpp:96`) now sets a `glfwErrorCallback`, checks `glfwInit()`, and throws if `glfwCreateWindow()` returns `NULL`
+- Added the static `glfwErrorCallback` next to `debugCallback` (`src/main.cpp:568`) that prints the GLFW error code + description
+
+Result: instead of a core dump you now get
 ```
-glfwCreateWindowSurface: Assertion `window != NULL' failed.
-Aborted (core dumped)
-```
-
-## What actually happened
-
-In `src/main.cpp:188-193`, `createSurface()` calls `glfwCreateWindowSurface(instance, window, ...)`, but `window` is `NULL`. That means `glfwCreateWindow` at `src/main.cpp:84` failed and returned `NULL` — and its return value (like `glfwInit()`'s at line 79) is never checked, so the failure went silent until the assert inside GLFW killed the process.
-
-The supporting evidence: the Vulkan instance **did** get created (you can see the validation layer's ICD-loading messages), so the crash is purely on the GLFW/window side.
-
-Also note: `-D VKB_WSI_SELECTION=WAYLAND` did nothing — CMake explicitly warned `Manually-specified variables were not used by the project`. That variable belongs to the Vulkan SDK's `vulkan-bootstrap`-style projects, not this one, and GLFW picks its platform (X11/Wayland) itself.
-
-## Likely causes
-
-Since `vkCreateInstance` worked but the window didn't, the usual suspects are:
-
-1. `glfwInit()` failed (no usable display server connection — e.g. neither `$DISPLAY` nor `$WAYLAND_DISPLAY` is set in the environment you launched from)
-2. `glfwCreateWindow()` failed on the NVIDIA + Wayland/X11 combination
-
-## How to find out which
-
-Add a GLFW error callback and check the returns — this will tell you the exact reason to stderr:
-
-```cpp
-void initWindow() {
-    glfwSetErrorCallback([](int code, const char *desc) {
-        std::cerr << "GLFW error " << code << ": " << desc << std::endl;
-    });
-
-    if (!glfwInit()) {
-        throw std::runtime_error("glfwInit failed!");
-    }
-
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-
-    window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
-    if (window == nullptr) {
-        throw std::runtime_error("glfwCreateWindow failed!");
-    }
-}
+GLFW error (65544): Wayland: Failed to connect to display
+failed to initialize GLFW!
 ```
 
-You can also quickly sanity-check the environment you're launching from:
+## To actually run it in this X11 session
 
-```fish
-echo $DISPLAY $WAYLAND_DISPLAY
+The code is now correct, but it needs an X11-capable GLFW. Either install the X11 build:
+
+```
+! sudo apt install libglfw3
 ```
 
-If both are empty (e.g. launching from an SSH session or a clean environment), that's your answer. Want me to apply the error-checking patch to `main.cpp`?
+(replaces `libglfw3-wayland`; swap back the same way if you return to a Wayland session) — or log back into your Wayland session.
+
+One heads-up for the other chapters: your justfile passes `-D VKB_WSI_SELECTION=WAYLAND`, which is a vk-bootstrap option (CMake warned it's unused here). If you stay on X11, you'll want `X11` there too.

@@ -94,12 +94,19 @@ class HelloTriangleApplication {
     std::vector<VkImageView> swapChainImageViews;
 
     void initWindow() {
-        glfwInit();
+        glfwSetErrorCallback(glfwErrorCallback);
+
+        if (!glfwInit()) {
+            throw std::runtime_error("failed to initialize GLFW!");
+        }
 
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
         window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
+        if (window == nullptr) {
+            throw std::runtime_error("failed to create window!");
+        }
     }
 
     void initVulkan() {
@@ -563,6 +570,11 @@ class HelloTriangleApplication {
         }
 
         return true;
+    }
+
+    static void glfwErrorCallback(int error, const char *description) {
+        std::cerr << "GLFW error (" << error << "): " << description
+                  << std::endl;
     }
 
     static VKAPI_ATTR VkBool32 VKAPI_CALL
