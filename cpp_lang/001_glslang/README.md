@@ -1,5 +1,6 @@
 # glslang
 - Khronos-reference front end for GLSL/ESSL, partial front end for HLSL, and a SPIR-V generator.
+  - https://github.com/KhronosGroup/glslang/
 
 # 외국 유튜브 자료
 
