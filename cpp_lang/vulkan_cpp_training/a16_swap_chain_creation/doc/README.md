@@ -51,3 +51,12 @@ echo $DISPLAY $WAYLAND_DISPLAY
 ```
 
 If both are empty (e.g. launching from an SSH session or a clean environment), that's your answer. Want me to apply the error-checking patch to `main.cpp`?
+
+# fix
+Fixed. The problem was a stray `}` at `src/main.cpp:109` — it closed the `HelloTriangleApplication` class right after `initWindow()`, so `initVulkan`, `mainLoop`, `cleanup`, etc. ended up at namespace scope where they couldn't see the member variables or each other. That one stray brace caused all the cascading "not declared in this scope" errors.
+
+Changes:
+- Removed the stray `}` after `initWindow()` so all functions stay inside the class
+- Joined the dangling `}` + `;` at the end into a proper `};` class terminator
+
+`just fm` + `cmake --build` now pass cleanly. `just cr` will also launch the windowed app, so run that when you want to see it live.

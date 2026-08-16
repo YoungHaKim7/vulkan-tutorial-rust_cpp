@@ -18,7 +18,18 @@ validation layer: terminator_CreateInstance: ICD "libvulkan_gfxstream.so" vkEnum
 validation layer: Copying old device 0 into new device 0
 validation layer: Copying old device 1 into new device 1
 validation layer: Copying old device 2 into new device 2
-a16_swap_chain_creation: ./src/vulkan.c:308: glfwCreateWindowSurface: Assertion `window != NULL' failed.
-Aborted (core dumped)
-error: recipe `cr` failed on line 117 with exit code 134
+validation layer: Copying old device 0 into new device 0
+validation layer: Copying old device 1 into new device 1
+validation layer: Copying old device 2 into new device 2
+validation layer: Copying old device 0 into new device 0
+validation layer: Copying old device 1 into new device 1
+validation layer: Copying old device 2 into new device 2
+validation layer: Copying old device 0 into new device 0
+validation layer: Copying old device 1 into new device 1
+validation layer: Copying old device 2 into new device 2
+validation layer: Copying old device 0 into new device 0
+validation layer: Copying old device 1 into new device 1
+validation layer: Copying old device 2 into new device 2
+validation layer: Unloading layer library libVkLayer_MESA_device_select.so
+validation layer: Unloading layer library libVkLayer_khronos_validation.so
 ```
