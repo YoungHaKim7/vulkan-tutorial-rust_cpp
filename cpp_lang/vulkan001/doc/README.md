@@ -64,6 +64,18 @@ python3 - <<'EOF'
    EOF
    Crop screenshot into three sections
 
+
+   python3 - <<'EOF'
+   from PIL import Image
+   img = Image.open('/tmp/vk_shot.png')
+   # Raptor Test window on left monitor: approx x 100..1400, y 130..980 of full image
+   crop = img.crop((80, 120, 1450, 1000))
+   crop.save('/tmp/vk_window.png')
+   print(crop.size)
+   EOF
+   Crop the Raptor Test window
+
+
 ```
 
 
