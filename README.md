@@ -39,9 +39,15 @@
   - (210413)An Introduction to Vulkan Video
     - https://www.khronos.org/blog/an-introduction-to-vulkan-video?mc_cid=8052312abe&mc_eid=64241dfcfa
 
+- Shaders이해
+  - [`.vert` & `.frag` 파일 차이점 이해하기](https://vulkan-tutorial.com/Drawing_a_triangle/Graphics_pipeline_basics/Shader_modules)
+
 - [VulkanAPI 알아보기](#vulkanapi)
   - [(외부링크)English ver. VulkanAPI 설명서_https://vkguide.dev/](https://vkguide.dev/)
   - [(외부링크)한글 ver. VulkanAPI 설명서_https://vkguide.dev/docs/ko](https://vkguide.dev/docs/ko)
+
+- Vulkan도구 이해하기(Shader Tool Chain, API Dump 등등)
+  - https://vulkan.lunarg.com/doc/sdk/1.4.357.0/windows/getting_started.html
 
 - https://github.com/KhronosGroup/Vulkan-Docs 
   - 한국사람이 잘 정리 https://nodiscard.tistory.com/257
