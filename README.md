@@ -32,6 +32,8 @@
     - https://github.com/KhronosGroup/Vulkan-Guide/tree/99e7f9d5e080cf74869428a5becbc4ce0a13a3f8/lang/kor
     - KHRONOS 포럼
       - https://community.khronos.org/
+  - (210413)An Introduction to Vulkan Video
+    - https://www.khronos.org/blog/an-introduction-to-vulkan-video?mc_cid=8052312abe&mc_eid=64241dfcfa
 
 - [VulkanAPI 알아보기](#vulkanapi)
   - [(외부링크)English ver. VulkanAPI 설명서_https://vkguide.dev/](https://vkguide.dev/)
