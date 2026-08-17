@@ -21,4 +21,6 @@
 
 # 외국유튜브 영상
 - [(220624)Vulkan with C++ 10 SPIR V Files | The Graphics Guy](https://youtu.be/5spoiJQo1O8?si=188kRaRBUd4MLcSr)
+  - Youtube채널 깃허브 
+    - https://github.com/amengede/getIntoGameDev
 
