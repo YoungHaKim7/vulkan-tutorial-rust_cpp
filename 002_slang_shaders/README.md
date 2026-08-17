@@ -24,3 +24,25 @@
   - Youtube채널 깃허브 
     - https://github.com/amengede/getIntoGameDev
 
+
+# `slang` & `slangc` version
+
+```bash
+$ slang version
+slang version 2026.13.1-1-g84792eb15
+
+$ slangc -version
+2026.13.1-1-g84792eb15
+```
+
+# `glslc --version`
+
+```bash
+$ glslc --version
+shaderc v2026.3 v2026.3
+spirv-tools v2026.3 v2022.4-1283-gb707790a
+glslang 11.1.0-1493-g168d452a
+
+Target: SPIR-V 1.0
+```
+

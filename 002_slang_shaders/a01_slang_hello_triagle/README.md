@@ -13,3 +13,14 @@ drwxrwxr-x   - gygy 17 Aug 16:03 └── target
 .rw-rw-r-- 972 gygy 17 Aug 16:07    └── hello-world.spv
 
 ```
+
+# `slang` & `slangc` version
+
+```bash
+$ slang version
+slang version 2026.13.1-1-g84792eb15
+
+$ slangc -version
+2026.13.1-1-g84792eb15
+```
+

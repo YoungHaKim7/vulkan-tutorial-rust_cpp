@@ -17,3 +17,14 @@ drwxrwxr-x    - gygy 17 Aug 16:11 └── target
 .rw-rw-r--  572 gygy 17 Aug 16:11    ├── frag.spv
 .rw-rw-r-- 1.5k gygy 17 Aug 16:11    └── vert.spv
 ```
+
+# `glslc --version`
+
+```bash
+$ glslc --version
+shaderc v2026.3 v2026.3
+spirv-tools v2026.3 v2022.4-1283-gb707790a
+glslang 11.1.0-1493-g168d452a
+
+Target: SPIR-V 1.0
+```
