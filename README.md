@@ -30,6 +30,8 @@
   - https://www.pbr-book.org/
   - Vulkan 한글 설명서
     - https://github.com/KhronosGroup/Vulkan-Guide/tree/99e7f9d5e080cf74869428a5becbc4ce0a13a3f8/lang/kor
+    - KHRONOS 포럼
+      - https://community.khronos.org/
 
 - [VulkanAPI 알아보기](#vulkanapi)
   - [(외부링크)English ver. VulkanAPI 설명서_https://vkguide.dev/](https://vkguide.dev/)
