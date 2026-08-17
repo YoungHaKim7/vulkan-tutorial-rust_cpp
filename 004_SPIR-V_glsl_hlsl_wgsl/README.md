@@ -21,15 +21,3 @@
 - GLSL로 역참조: [SPIRV-Cross](https://github.com/khronosgroup/spirv-cross) 라이브러리를 사용하면 `.spv` 파일을 다시 가독성 높은 GLSL이나 타 언어로 디컴파일할 수 있습니다.
 
 - 변수 정보 확인: [SPIRV-Reflect](https://github.com/KhronosGroup/SPIRV-Reflect)를 이용해 셰이더 내부의 유니폼, 바인딩, 속성 등의 메타데이터(리플렉션)를 코드로 추출할 수 있습니다.
-
-
-# Rust GPU Dev Guide
-- https://rust-gpu.github.io/rust-gpu/book/spirv-minimization.html
-
-# 실험용인듯
-- https://github.com/rust-gpu/spirt
-
-- https://github.com/rust-gpu/rspirv2
-
-- Safe Rust bindings to SPIRV-Cross 
-  - https://crates.io/crates/spirv-cross2/0.7.1
