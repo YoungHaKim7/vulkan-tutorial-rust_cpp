@@ -24,7 +24,11 @@
 
 - eBook
   - (Rust) Vulkan eBook
+    - https://github.com/KhronosGroup/Vulkan-Guide
     - https://vulkano.rs/
+  - (C++) Vulkan eBook
+    - https://github.com/Overv/VulkanTutorial
+    - https://vulkan-tutorial.com/
   - Raytracing
     - https://github.com/RayTracing/raytracing.github.io
   - https://www.pbr-book.org/
