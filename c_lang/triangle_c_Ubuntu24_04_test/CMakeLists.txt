@@ -34,6 +34,16 @@ unset(CMAKE_REQUIRED_LIBRARIES)
 set(WGPU_FFI ${CMAKE_CURRENT_SOURCE_DIR}/include/vendor/ffi)
 set(WGPU_LIBRARY ${WGPU_FFI}/lib/libwgpu_native.so)
 
+if (NOT EXISTS "${WGPU_LIBRARY}")
+    message(FATAL_ERROR
+        "libwgpu_native.so not found at ${WGPU_LIBRARY}\n"
+        "The prebuilt library is not tracked by git (.gitignore: *.so). "
+        "Fetch it from the wgpu-native release:\n"
+        "  curl -sL https://github.com/gfx-rs/wgpu-native/releases/download/"
+        "v29.0.1.1/wgpu-linux-x86_64-release.zip -o /tmp/wgpu.zip\n"
+        "  unzip -o -j /tmp/wgpu.zip 'lib/libwgpu_native.so' -d include/vendor/ffi/lib")
+endif()
+
 if (MSVC)
     add_compile_options(/W4)
 else()

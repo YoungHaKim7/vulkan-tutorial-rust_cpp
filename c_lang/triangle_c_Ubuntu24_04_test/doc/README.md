@@ -746,3 +746,31 @@ The justfile ran `cmake .` **in-source** (polluting the repo with `build.ninja`,
 - Build verified — the binary is at `target/target/00_hello_vulkan_LinuxOS`, matching the fixed recipe. `just cr` should now work end to end.
 
 - One minor note: the `VKB_WSI_SELECTION=WAYLAND` warning means your CMakeLists doesn't use that variable (it's for vulkan-bootstrap's WSI, and your project links GLFW instead). Harmless — you can drop that `-D` flag if you want a clean configure.
+
+# Fix
+
+Fixed and verified — `just cr` will now work end-to-end.
+
+**Root cause:** the vendored FFI headers were committed, but `libwgpu_native.so` never was — `.gitignore` has a global `*.so` rule, so `include/vendor/ffi/lib/` was empty on this machine. Ninja's "missing and no known rule" error was just the missing prerequisite.
+
+**What I did:**
+
+1. **Fetched the prebuilt library** — downloaded wgpu-native `v29.0.1.1` (the version CMakeLists.txt names) linux-x86_64 release and installed `libwgpu_native.so` into `include/vendor/ffi/lib/`. Both vendored headers (`wgpu.h`, `webgpu-headers/webgpu.h`) diff-identical against the release, confirming the version match.
+
+2. **Hardened `CMakeLists.txt:37`** — added an `EXISTS` check that fails at *configure* time with the exact fetch commands, instead of the cryptic ninja error. Verified the message fires when the library is absent, then restored and rebuilt.
+
+3. **Verified** — clean reconfigure + full build + run: the app starts and prints adapter info (NVIDIA GeForce RTX 3060 Ti, exit 0).
+
+One thing to consider: the `.so` is still untracked, so any fresh clone hits this again. If you want it permanent, either force-add it:
+
+```bash
+git add -f include/vendor/ffi/lib/libwgpu_native.so
+```
+
+or add an exception to `.gitignore`:
+
+```
+!include/vendor/ffi/lib/*.so
+```
+
+(~9 MB binary in git vs. a documented fetch step — your call; I didn't commit anything.)
