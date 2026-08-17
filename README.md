@@ -40,6 +40,7 @@
     - https://www.khronos.org/blog/an-introduction-to-vulkan-video?mc_cid=8052312abe&mc_eid=64241dfcfa
 
 - Shaders이해
+  - https://vulkan.lunarg.com/doc/view/1.4.321.0/mac/antora/tutorial/latest/03_Drawing_a_triangle/02_Graphics_pipeline_basics/01_Shader_modules.html
   - [`.vert` & `.frag` 파일 차이점 이해하기](https://vulkan-tutorial.com/Drawing_a_triangle/Graphics_pipeline_basics/Shader_modules)
 
 - [VulkanAPI 알아보기](#vulkanapi)
