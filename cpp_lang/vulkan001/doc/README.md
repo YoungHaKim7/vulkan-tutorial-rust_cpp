@@ -52,6 +52,19 @@ python3 - <<'EOF'
    EOF
    Decode XWD screenshot to PNG
 
+  python3 - <<'EOF'
+   from PIL import Image
+   img = Image.open('/tmp/vk_shot.png')
+   w, h = img.size
+   # left quarter, mid, right
+   img.crop((0, 0, w//3, h)).save('/tmp/vk_left.png')
+   img.crop((w//3, 0, 2*w//3, h)).save('/tmp/vk_mid.png')
+   img.crop((2*w//3, 0, w, h)).save('/tmp/vk_right.png')
+   print('done')
+   EOF
+   Crop screenshot into three sections
+
 ```
+
 
 
