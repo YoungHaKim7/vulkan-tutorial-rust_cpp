@@ -59,6 +59,10 @@
 
 <img src="https://vulkan.lunarg.com/doc/view/1.3.280.0/windows/images/high_level_loader.png" />
 
+# Graphics pipeline basics
+- https://vulkan.lunarg.com/doc/view/1.4.321.0/mac/antora/tutorial/latest/03_Drawing_a_triangle/02_Graphics_pipeline_basics/00_Introduction.html
+
+<img src="https://vulkan.lunarg.com/doc/view/1.4.321.0/mac/antora/tutorial/latest/_images/images/vulkan_simplified_pipeline.svg" />
 
 
 <hr />
