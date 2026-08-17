@@ -7,6 +7,7 @@
 - https://github.com/google/shaderc
 
 # File Types.
+- https://vulkan.lunarg.com/doc/view/1.4.321.0/mac/antora/tutorial/latest/03_Drawing_a_triangle/02_Graphics_pipeline_basics/01_Shader_modules.html
 
 - `vert`: Vertex shader source code written in languages like GLSL or HLSL..
   - `vert`: GLSL이나 HLSL 같은 언어로 작성된 버텍스 셰이더 소스 코드..
