@@ -1,4 +1,34 @@
-# debug
+# fix
+Fixed and verified — the app now runs cleanly and renders the engine model. Three changes:
+
+## Root cause of the SIGSEGV
+
+`2Cylinder.gltf` references `2CylinderEngine0.bin` (1,794,612 bytes), but **that file was never in `assets/`** — only `2Cylinder.gltf` was copied. So:
+
+1. `file_read_binary()` returned `{nullptr, 0}` (`raptor/foundation/file.cpp:385` — null on failure, no error printed)
+2. `main.cpp` pushed that `nullptr` into `buffers_data`
+3. `get_buffer_data()` computed `nullptr + byteOffset(1340232)` → `GpuDevice::create_buffer()` did `memcpy(dst, invalid_ptr, 454380)` → SIGSEGV (backtrace confirmed: `__memcpy_avx_unaligned_erms` ← `GpuDevice::create_buffer` ← `main`)
+
+## Fixes
+
+| File                                  | Change                                                                                                                                |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `assets/2CylinderEngine0.bin`         | Downloaded from the archived Khronos `glTF-Sample-Models` repo — size matches the glTF's declared `byteLength` exactly                |
+| `src/main.cpp:277`                    | Null-check after `file_read_binary` → prints `Error: cannot read binary file '...' referenced by '...'` and exits instead of crashing |
+| `raptor/graphics/gpu_device.cpp:1797` | Removed the init-time manual layout transition of all swapchain images in `vulkan_create_swapchain_pass`                              |
+
+The **validation warnings** (`UNASSIGNED-non-acquired-swapchain-image-used`) came from that third item: the spec forbids touching presentable images outside the acquire→present window. The transition was redundant anyway — the swapchain render pass already declares `initialLayout = UNDEFINED` / `finalLayout = PRESENT_SRC_KHR` and performs the transition per-frame, legally.
+
+## Verification
+
+- Ran ~6 s under gdb-free run: **zero validation errors**, window opened, clean shutdown (`HeapAllocator Shutdown - all memory free!`)
+- Screenshot confirms the **2CylinderEngine model is rendering** (visible engine geometry against the green clear color) with the ImGui panels
+- Missing-file error path tested: clear message, clean exit, no crash
+- Rebuilt with `make -j`; note CMake only copies `assets/` at configure time, so I `cp`'d the `.bin` into `build/bin/assets/` manually
+
+You already committed these changes yourself (`8c30ad9`) — heads up that commit also picked up `imgui.ini` from the repo root, which the app regenerated when I ran it from there.
+
+# debugging
 
 ```bash
 $ gdb -batch -ex run -ex "bt 25" -ex "info registers rip" --args ./build/bin/vulkan001 ./build/bin/assets/2Cylinder.gltf 2>&1 | tail -60
