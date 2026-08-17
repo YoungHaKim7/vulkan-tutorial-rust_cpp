@@ -14,6 +14,22 @@ pkg_check_modules(GLFW REQUIRED IMPORTED_TARGET glfw3)
 # Wayland client headers (openSUSE installs them under /usr/include/wayland)
 pkg_check_modules(WAYLAND REQUIRED IMPORTED_TARGET wayland-client)
 
+# Distro GLFW builds may omit the Wayland backend entirely (e.g. Ubuntu's
+# libglfw is X11-only), in which case the Wayland native access symbols do
+# not exist. Probe for them instead of using the GLFW 3.4-only
+# glfwGetPlatform() API.
+include(CheckCSourceCompiles)
+set(CMAKE_REQUIRED_LIBRARIES PkgConfig::GLFW PkgConfig::WAYLAND)
+check_c_source_compiles(
+    "
+    #define GLFW_EXPOSE_NATIVE_WAYLAND
+    #include <GLFW/glfw3.h>
+    #include <GLFW/glfw3native.h>
+    int main(void) { return glfwGetWaylandDisplay() != 0; }
+    "
+    GLFW_HAS_WAYLAND_NATIVE)
+unset(CMAKE_REQUIRED_LIBRARIES)
+
 # Vendored wgpu-native ffi (headers + prebuilt library, wgpu-native v29.0.1.1)
 set(WGPU_FFI ${CMAKE_CURRENT_SOURCE_DIR}/include/vendor/ffi)
 set(WGPU_LIBRARY ${WGPU_FFI}/lib/libwgpu_native.so)
@@ -44,10 +60,10 @@ if (WIN32)
     target_compile_definitions(${ProjectId} PRIVATE GLFW_EXPOSE_NATIVE_WIN32)
     set(OS_LIBRARIES userenv ws2_32 bcrypt)
 elseif(UNIX AND NOT APPLE)
-    target_compile_definitions(${ProjectId} PRIVATE
-        GLFW_EXPOSE_NATIVE_X11
-        GLFW_EXPOSE_NATIVE_WAYLAND
-    )
+    target_compile_definitions(${ProjectId} PRIVATE GLFW_EXPOSE_NATIVE_X11)
+    if (GLFW_HAS_WAYLAND_NATIVE)
+        target_compile_definitions(${ProjectId} PRIVATE GLFW_EXPOSE_NATIVE_WAYLAND)
+    endif()
     set(OS_LIBRARIES m dl pthread)
 elseif(APPLE)
     target_compile_definitions(${ProjectId} PRIVATE GLFW_EXPOSE_NATIVE_COCOA)

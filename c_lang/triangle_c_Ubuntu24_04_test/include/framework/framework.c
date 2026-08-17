@@ -64,18 +64,17 @@ WGPUShaderModule frmwrk_load_shader_module(WGPUDevice device,
     buf[length] = 0;
 
     shader_module = wgpuDeviceCreateShaderModule(
-        device,
-        &(const WGPUShaderModuleDescriptor){
-            .label = {name, WGPU_STRLEN},
-            .nextInChain =
-                (const WGPUChainedStruct *)&(const WGPUShaderSourceWGSL){
-                    .chain =
-                        (const WGPUChainedStruct){
-                            .sType = WGPUSType_ShaderSourceWGSL,
+        device, &(const WGPUShaderModuleDescriptor){
+                    .label = {name, WGPU_STRLEN},
+                    .nextInChain =
+                        (WGPUChainedStruct *)&(const WGPUShaderSourceWGSL){
+                            .chain =
+                                (const WGPUChainedStruct){
+                                    .sType = WGPUSType_ShaderSourceWGSL,
+                                },
+                            .code = {buf, WGPU_STRLEN},
                         },
-                    .code = {buf, WGPU_STRLEN},
-                },
-        });
+                });
 
 cleanup:
     if (file)

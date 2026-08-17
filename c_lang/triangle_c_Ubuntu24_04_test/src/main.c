@@ -111,8 +111,7 @@ int main(int argc, char *argv[]) {
             demo.instance,
             &(const WGPUSurfaceDescriptor){
                 .nextInChain =
-                    (const WGPUChainedStruct *)&(
-                        const WGPUSurfaceSourceMetalLayer){
+                    (WGPUChainedStruct *)&(const WGPUSurfaceSourceMetalLayer){
                         .chain =
                             (const WGPUChainedStruct){
                                 .sType = WGPUSType_SurfaceSourceMetalLayer,
@@ -122,15 +121,33 @@ int main(int argc, char *argv[]) {
             });
     }
 #elif defined(GLFW_EXPOSE_NATIVE_WAYLAND) && defined(GLFW_EXPOSE_NATIVE_X11)
-    if (glfwGetPlatform() == GLFW_PLATFORM_X11) {
+    // glfwGetPlatform() requires GLFW 3.4; with 3.3 the active backend is
+    // detected via glfwGetWaylandDisplay(), which returns NULL under X11.
+    if (glfwGetWaylandDisplay() != NULL) {
+        struct wl_display *wayland_display = glfwGetWaylandDisplay();
+        struct wl_surface *wayland_surface = glfwGetWaylandWindow(window);
+        demo.surface = wgpuInstanceCreateSurface(
+            demo.instance,
+            &(const WGPUSurfaceDescriptor){
+                .nextInChain =
+                    (WGPUChainedStruct *)&(
+                        const WGPUSurfaceSourceWaylandSurface){
+                        .chain =
+                            (const WGPUChainedStruct){
+                                .sType = WGPUSType_SurfaceSourceWaylandSurface,
+                            },
+                        .display = wayland_display,
+                        .surface = wayland_surface,
+                    },
+            });
+    } else {
         Display *x11_display = glfwGetX11Display();
         Window x11_window = glfwGetX11Window(window);
         demo.surface = wgpuInstanceCreateSurface(
             demo.instance,
             &(const WGPUSurfaceDescriptor){
                 .nextInChain =
-                    (const WGPUChainedStruct *)&(
-                        const WGPUSurfaceSourceXlibWindow){
+                    (WGPUChainedStruct *)&(const WGPUSurfaceSourceXlibWindow){
                         .chain =
                             (const WGPUChainedStruct){
                                 .sType = WGPUSType_SurfaceSourceXlibWindow,
@@ -140,21 +157,23 @@ int main(int argc, char *argv[]) {
                     },
             });
     }
-    if (glfwGetPlatform() == GLFW_PLATFORM_WAYLAND) {
-        struct wl_display *wayland_display = glfwGetWaylandDisplay();
-        struct wl_surface *wayland_surface = glfwGetWaylandWindow(window);
+#elif defined(GLFW_EXPOSE_NATIVE_X11)
+    // GLFW built without the Wayland backend: windows are always X11, even
+    // when running under Wayland (via XWayland).
+    {
+        Display *x11_display = glfwGetX11Display();
+        Window x11_window = glfwGetX11Window(window);
         demo.surface = wgpuInstanceCreateSurface(
             demo.instance,
             &(const WGPUSurfaceDescriptor){
                 .nextInChain =
-                    (const WGPUChainedStruct *)&(
-                        const WGPUSurfaceSourceWaylandSurface){
+                    (WGPUChainedStruct *)&(const WGPUSurfaceSourceXlibWindow){
                         .chain =
                             (const WGPUChainedStruct){
-                                .sType = WGPUSType_SurfaceSourceWaylandSurface,
+                                .sType = WGPUSType_SurfaceSourceXlibWindow,
                             },
-                        .display = wayland_display,
-                        .surface = wayland_surface,
+                        .display = x11_display,
+                        .window = x11_window,
                     },
             });
     }
@@ -166,8 +185,7 @@ int main(int argc, char *argv[]) {
             demo.instance,
             &(const WGPUSurfaceDescriptor){
                 .nextInChain =
-                    (const WGPUChainedStruct *)&(
-                        const WGPUSurfaceSourceWindowsHWND){
+                    (WGPUChainedStruct *)&(const WGPUSurfaceSourceWindowsHWND){
                         .chain =
                             (const WGPUChainedStruct){
                                 .sType = WGPUSType_SurfaceSourceWindowsHWND,
@@ -294,6 +312,7 @@ int main(int argc, char *argv[]) {
             }
             continue;
         }
+        case WGPUSurfaceGetCurrentTextureStatus_Error:
         case WGPUSurfaceGetCurrentTextureStatus_Force32:
             // Fatal error
             printf(LOG_PREFIX " get_current_texture status=%#.8x\n",

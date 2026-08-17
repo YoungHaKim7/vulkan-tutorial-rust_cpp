@@ -1,3 +1,21 @@
+# Ubuntu24.04 test
+
+- Fixed and verified — `just cr` now builds clean (zero warnings) and the triangle app runs on the NVIDIA RTX 3060 Ti.
+
+## What was wrong
+
+**1. Missing `libwgpu_native.so`** — `include/vendor/ffi/` only contained headers. `.gitignore` excludes `*.so`, so the prebuilt library was never committed anywhere. I downloaded the official [wgpu-native v29.0.1.1](https://github.com/gfx-rs/wgpu-native/releases/download/v29.0.1.1/wgpu-linux-x86_64-release.zip) linux-x86_64 release (the version CMakeLists pins) and placed `libwgpu_native.so` + `.a` into `include/vendor/ffi/lib/`. Your vendored headers are byte-identical to that release, confirming the pin. Note: on a fresh clone you'll need to re-fetch it, since git ignores it.
+
+**2. GLFW 3.4 API used against 3.3.10** — `src/main.c:143` used `glfwGetPlatform()`/`GLFW_PLATFORM_WAYLAND`, which only exist in GLFW 3.4. Replaced with the 3.3-compatible probe: `glfwGetWaylandDisplay() != NULL` (returns NULL when running under X11).
+
+**3. System libglfw is X11-only** — `nm` shows it exports `glfwGetX11*` but zero Wayland symbols, so the Wayland branch couldn't even link. Added a `check_c_source_compiles` probe in `CMakeLists.txt` (`GLFW_HAS_WAYLAND_NATIVE`): the dual X11/Wayland path is only compiled when the symbols exist; otherwise a new X11-only branch is used, which also works on Wayland sessions via XWayland. On a distro with Wayland-enabled GLFW (e.g. openSUSE), the full dual path comes back automatically.
+
+**4. Warnings** — dropped the outer `const` on the `(WGPUChainedStruct *)&(...)` casts (the v29 header declares `nextInChain` non-const), and added the missing `WGPUSurfaceGetCurrentTextureStatus_Error` case to the status switch.
+
+**5. justfile `r` recipe** — it defined no `GLFW_EXPOSE_NATIVE_*` macro (required by `glfw3native.h`), so it could never compile this file; added the per-OS define to `cflags`.
+
+<hr />
+
 # fix
 Done — exit 124 means the app ran until the timeout killed it (a missing shader or failed adapter request would have aborted immediately). The triangle window was up and rendering.
 
