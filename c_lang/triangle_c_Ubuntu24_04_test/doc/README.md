@@ -14,6 +14,674 @@
 
 **5. justfile `r` recipe** — it defined no `GLFW_EXPOSE_NATIVE_*` macro (required by `glfw3native.h`), so it could never compile this file; added the per-OS define to `cflags`.
 
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Edit file
+ src/main.c
+╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
+```rs
+ 122              });
+ 123      }
+ 124  #elif defined(GLFW_EXPOSE_NATIVE_WAYLAND) && defined(GLFW_EXPOSE_NATIVE_X11)
+ 125 -    if (glfwGetPlatform() == GLFW_PLATFORM_X11) {                                                        
+ 126 -        Display *x11_display = glfwGetX11Display();                                                      
+ 127 -        Window x11_window = glfwGetX11Window(window);                                                    
+ 125 +    // glfwGetPlatform() requires GLFW 3.4; with 3.3 the active backend is                               
+ 126 +    // detected via glfwGetWaylandDisplay(), which returns NULL under X11.                               
+ 127 +    if (glfwGetWaylandDisplay() != NULL) {                                                               
+ 128 +        struct wl_display *wayland_display = glfwGetWaylandDisplay();                                    
+ 129 +        struct wl_surface *wayland_surface = glfwGetWaylandWindow(window);                               
+ 130          demo.surface = wgpuInstanceCreateSurface(
+ 131              demo.instance,
+ 132              &(const WGPUSurfaceDescriptor){
+ 133                  .nextInChain =
+ 132 -                    (const WGPUChainedStruct *)&(                                                        
+ 133 -                        const WGPUSurfaceSourceXlibWindow){                                              
+ 134 +                    (WGPUChainedStruct *)&(                                                              
+ 135 +                        const WGPUSurfaceSourceWaylandSurface){                                          
+ 136                          .chain =
+ 137                              (const WGPUChainedStruct){
+ 136 -                                .sType = WGPUSType_SurfaceSourceXlibWindow,                              
+ 138 +                                .sType = WGPUSType_SurfaceSourceWaylandSurface,                          
+ 139                              },
+ 138 -                        .display = x11_display,                                                          
+ 139 -                        .window = x11_window,                                                            
+ 140 +                        .display = wayland_display,                                                      
+ 141 +                        .surface = wayland_surface,                                                      
+ 142                      },
+ 143              });
+ 142 -    }                                                                                                    
+ 143 -    if (glfwGetPlatform() == GLFW_PLATFORM_WAYLAND) {                                                    
+ 144 -        struct wl_display *wayland_display = glfwGetWaylandDisplay();                                    
+ 145 -        struct wl_surface *wayland_surface = glfwGetWaylandWindow(window);                               
+ 144 +    } else {                                                                                             
+ 142 -    }                                                                                                                                                                                           
+ 143 -    if (glfwGetPlatform() == GLFW_PLATFORM_WAYLAND) {                                                                                                                                           
+ 144 -        struct wl_display *wayland_display = glfwGetWaylandDisplay();                                                                                                                           
+ 145 -        struct wl_surface *wayland_surface = glfwGetWaylandWindow(window);                                                                                                                      
+ 144 +    } else {                                                                                                                                                                                    
+ 145 +        Display *x11_display = glfwGetX11Display();                                                                                                                                             
+  X11).
+  2. Warning: vendored webgpu.h declares WGPUChainedStruct * nextInChain (non-const, line 4219) but the code
+  casts to (const WGPUChainedStruct *).
+  3. -Wswitch warning: switch misses WGPUSurfaceGetCurrentTextureStatus_Error.
+
+● Bash(grep -n "(const WGPUChainedStruct \*)" src/main.c; echo ---; sed -n 296,315p src/main.c)
+  ⎿  114:                    (const WGPUChainedStruct *)&(
+     132:                    (const WGPUChainedStruct *)&(
+     150:                    (const WGPUChainedStruct *)&(
+     … +22 lines (ctrl+o to expand)
+
+  Thought for 31s (ctrl+o to expand)
+
+● Now applying the fixes:
+
+● Update(src/main.c)
+  ⎿  Added 18 lines, removed 17 lines
+      122              });
+      123      }
+      124  #elif defined(GLFW_EXPOSE_NATIVE_WAYLAND) && defined(GLFW_EXPOSE_NATIVE_X11)
+      125 -    if (glfwGetPlatform() == GLFW_PLATFORM_X11) {                                                                                                                                   
+      126 -        Display *x11_display = glfwGetX11Display();                                                                                                                                 
+      127 -        Window x11_window = glfwGetX11Window(window);                                                                                                                               
+      125 +    // glfwGetPlatform() requires GLFW 3.4; with 3.3 the active backend is                                                                                                          
+      126 +    // detected via glfwGetWaylandDisplay(), which returns NULL under X11.                                                                                                          
+      127 +    if (glfwGetWaylandDisplay() != NULL) {                                                                                                                                          
+      128 +        struct wl_display *wayland_display = glfwGetWaylandDisplay();                                                                                                               
+      129 +        struct wl_surface *wayland_surface = glfwGetWaylandWindow(window);                                                                                                          
+      130          demo.surface = wgpuInstanceCreateSurface(
+      131              demo.instance,
+      132              &(const WGPUSurfaceDescriptor){
+      133                  .nextInChain =
+      132 -                    (const WGPUChainedStruct *)&(                                                                                                                                   
+      133 -                        const WGPUSurfaceSourceXlibWindow){                                                                                                                         
+      134 +                    (WGPUChainedStruct *)&(                                                                                                                                         
+      135 +                        const WGPUSurfaceSourceWaylandSurface){                                                                                                                     
+      136                          .chain =
+      137                              (const WGPUChainedStruct){
+      136 -                                .sType = WGPUSType_SurfaceSourceXlibWindow,                                                                                                         
+      138 +                                .sType = WGPUSType_SurfaceSourceWaylandSurface,                                                                                                     
+      139                              },
+      138 -                        .display = x11_display,                                                                                                                                     
+      139 -                        .window = x11_window,                                                                                                                                       
+      140 +                        .display = wayland_display,                                                                                                                                 
+      141 +                        .surface = wayland_surface,                                                                                                                                 
+      142                      },
+      143              });
+      142 -    }                                                                                                                                                                               
+      143 -    if (glfwGetPlatform() == GLFW_PLATFORM_WAYLAND) {                                                                                                                               
+      144 -        struct wl_display *wayland_display = glfwGetWaylandDisplay();                                                                                                               
+      145 -        struct wl_surface *wayland_surface = glfwGetWaylandWindow(window);                                                                                                          
+      144 +    } else {                                                                                                                                                                        
+      145 +        Display *x11_display = glfwGetX11Display();                                                                                                                                 
+      146 +        Window x11_window = glfwGetX11Window(window);                                                                                                                               
+      147          demo.surface = wgpuInstanceCreateSurface(
+      148              demo.instance,
+      149              &(const WGPUSurfaceDescriptor){
+      150                  .nextInChain =
+      150 -                    (const WGPUChainedStruct *)&(                                                                                                                                   
+      151 -                        const WGPUSurfaceSourceWaylandSurface){                                                                                                                     
+      151 +                    (WGPUChainedStruct *)&(                                                                                                                                         
+      152 +                        const WGPUSurfaceSourceXlibWindow){                                                                                                                         
+      153                          .chain =
+      154                              (const WGPUChainedStruct){
+      154 -                                .sType = WGPUSType_SurfaceSourceWaylandSurface,                                                                                                     
+      155 +                                .sType = WGPUSType_SurfaceSourceXlibWindow,                                                                                                         
+      156                              },
+      156 -                        .display = wayland_display,                                                                                                                                 
+      157 -                        .surface = wayland_surface,                                                                                                                                 
+      157 +                        .display = x11_display,                                                                                                                                     
+      158 +                        .window = x11_window,                                                                                                                                       
+      159                      },
+      160              });
+      161      }
+
+● Update(src/main.c)
+  ⎿  Added 2 lines, removed 2 lines
+      111              demo.instance,
+      112              &(const WGPUSurfaceDescriptor){
+      113                  .nextInChain =
+      114 -                    (const WGPUChainedStruct *)&(                                                                                                                                   
+      114 +                    (WGPUChainedStruct *)&(                                                                                                                                         
+      115                          const WGPUSurfaceSourceMetalLayer){
+      116                          .chain =
+      117                              (const WGPUChainedStruct){
+     ...
+      167              demo.instance,
+      168              &(const WGPUSurfaceDescriptor){
+      169                  .nextInChain =
+      170 -                    (const WGPUChainedStruct *)&(                                                                                                                                   
+      170 +                    (WGPUChainedStruct *)&(                                                                                                                                         
+      171                          const WGPUSurfaceSourceWindowsHWND){
+      172                          .chain =
+      173                              (const WGPUChainedStruct){
+
+● Update(src/main.c)
+  ⎿  Added 1 line
+      295              }
+      297          }
+      298 +        case WGPUSurfaceGetCurrentTextureStatus_Error:                                                                                                                              
+      299          case WGPUSurfaceGetCurrentTextureStatus_Force32:
+      300              // Fatal error
+      301              printf(LOG_PREFIX " get_current_texture status=%#.8x\n",
+
+  Thought for 3s (ctrl+o to expand)
+
+● Rebuilding:
+
+● Bash(cmake --build target 2>&1 | tail -8)                                                                297          }
+      298 +        case WGPUSurfaceGetCurrentTextureStatus_Error:                                                                                                                             
+      299          case WGPUSurfaceGetCurrentTextureStatus_Force32:
+      300              // Fatal error
+      301              printf(LOG_PREFIX " get_current_texture status=%#.8x\n",
+
+  Thought for 3s (ctrl+o to expand)
+
+● Rebuilding:
+
+● Bash(cmake --build target 2>&1 | tail -8)
+      297          }
+      298 +        case WGPUSurfaceGetCurrentTextureStatus_Error:                                                                                                                           
+      299          case WGPUSurfaceGetCurrentTextureStatus_Force32:
+      300              // Fatal error
+      301              printf(LOG_PREFIX " get_current_texture status=%#.8x\n",
+
+  Thought for 3s (ctrl+o to expand)
+
+● Rebuilding:
+
+● Bash(cmake --build target 2>&1 | tail -8)
+      297          }
+      298 +        case WGPUSurfaceGetCurrentTextureStatus_Error:                                                                                                                     
+      299          case WGPUSurfaceGetCurrentTextureStatus_Force32:
+      300              // Fatal error
+      301              printf(LOG_PREFIX " get_current_texture status=%#.8x\n",
+
+  Thought for 3s (ctrl+o to expand)
+
+● Rebuilding:
+
+● Bash(cmake --build target 2>&1 | tail -8)
+      297          }
+      298 +        case WGPUSurfaceGetCurrentTextureStatus_Error:                                                                                                          
+      299          case WGPUSurfaceGetCurrentTextureStatus_Force32:
+      300              // Fatal error
+      301              printf(LOG_PREFIX " get_current_texture status=%#.8x\n",
+
+  Thought for 3s (ctrl+o to expand)
+
+● Rebuilding:
+
+● Bash(cmake --build target 2>&1 | tail -8)
+      297          }
+      298 +        case WGPUSurfaceGetCurrentTextureStatus_Error:                                                                                                  
+      299          case WGPUSurfaceGetCurrentTextureStatus_Force32:
+      300              // Fatal error
+      301              printf(LOG_PREFIX " get_current_texture status=%#.8x\n",
+
+  Thought for 3s (ctrl+o to expand)
+
+● Rebuilding:
+
+● Bash(cmake --build target 2>&1 | tail -8)
+      297          }
+      298 +        case WGPUSurfaceGetCurrentTextureStatus_Error:                                                                                            
+      299          case WGPUSurfaceGetCurrentTextureStatus_Force32:
+      300              // Fatal error
+      301              printf(LOG_PREFIX " get_current_texture status=%#.8x\n",
+
+  Thought for 3s (ctrl+o to expand)
+
+● Rebuilding:
+
+● Bash(cmake --build target 2>&1 | tail -8)
+      297          }
+      298 +        case WGPUSurfaceGetCurrentTextureStatus_Error:                                                                                      
+      299          case WGPUSurfaceGetCurrentTextureStatus_Force32:
+      300              // Fatal error
+      301              printf(LOG_PREFIX " get_current_texture status=%#.8x\n",
+
+  Thought for 3s (ctrl+o to expand)
+
+● Rebuilding:
+
+● Bash(cmake --build target 2>&1 | tail -8)
+      297          }
+      298 +        case WGPUSurfaceGetCurrentTextureStatus_Error:                                                                                 
+      299          case WGPUSurfaceGetCurrentTextureStatus_Force32:
+      300              // Fatal error
+      301              printf(LOG_PREFIX " get_current_texture status=%#.8x\n",
+
+  Thought for 3s (ctrl+o to expand)
+
+● Rebuilding:
+
+● Bash(cmake --build target 2>&1 | tail -8)
+      297          }
+      298 +        case WGPUSurfaceGetCurrentTextureStatus_Error:                                                                           
+      299          case WGPUSurfaceGetCurrentTextureStatus_Force32:
+      300              // Fatal error
+      301              printf(LOG_PREFIX " get_current_texture status=%#.8x\n",
+
+  Thought for 3s (ctrl+o to expand)
+
+● Rebuilding:
+
+● Bash(cmake --build target 2>&1 | tail -8)
+      297          }
+      298 +        case WGPUSurfaceGetCurrentTextureStatus_Error:                                                                       
+      299          case WGPUSurfaceGetCurrentTextureStatus_Force32:
+      300              // Fatal error
+      301              printf(LOG_PREFIX " get_current_texture status=%#.8x\n",
+
+  Thought for 3s (ctrl+o to expand)
+
+● Rebuilding:
+
+● Bash(cmake --build target 2>&1 | tail -8)
+      297          }
+      298 +        case WGPUSurfaceGetCurrentTextureStatus_Error:                                                                    
+      299          case WGPUSurfaceGetCurrentTextureStatus_Force32:
+      300              // Fatal error
+      301              printf(LOG_PREFIX " get_current_texture status=%#.8x\n",
+
+  Thought for 3s (ctrl+o to expand)
+
+● Rebuilding:
+
+● Bash(cmake --build target 2>&1 | tail -8)
+      297          }
+      298 +        case WGPUSurfaceGetCurrentTextureStatus_Error:                                                                   
+      299          case WGPUSurfaceGetCurrentTextureStatus_Force32:
+      300              // Fatal error
+      301              printf(LOG_PREFIX " get_current_texture status=%#.8x\n",
+
+  Thought for 3s (ctrl+o to expand)
+
+● Rebuilding:
+
+● Bash(cmake --build target 2>&1 | tail -8)
+  ⎿  FAILED: debug/triangle_c
+     : && /opt/gcc-16/bin/gcc -g -Wl,--dependency-file=CMakeFiles/triangle_c.dir/link.d CMakeFiles/triangle_c.dir/src/main.c.o -o debu
+     g/triangle_c -L/home/gygy/my_projects/Cpp_Lang/vulkan-tutorial-rust_cpp/c_lang/triangle_c/include/vendor/ffi/lib -Wl,-rpath,/home
+     … +14 lines (ctrl+o to expand)
+  ⎿  Found 10 new diagnostic issues in 1 file (ctrl+o to expand)
+
+  Thought for 43s (ctrl+o to expand)
+
+● Compiles clean now (warnings gone), but linking reveals the system libglfw.so (Ubuntu's 3.3.10 build) was built without the Wayland 
+  backend — the symbols don't exist at all. Let me confirm:
+
+● Bash(nm -D /usr/lib/x86_64-linux-gnu/libglfw.so | grep -ci wayland; nm -D /usr/lib/x86_64-linux-gnu/libglfw.so | grep -c getX11; ls
+      /usr/lib/x86_64-linux-gnu/libglfw…)
+  ⎿  0
+     0
+     /usr/lib/x86_64-linux-gnu/libglfw.so
+     … +2 lines (ctrl+o to expand)
+
+  Thought for 5s (ctrl+o to expand)
+
+● Odd — let me recheck the symbol list properly:
+
+● Bash(nm -D /usr/lib/x86_64-linux-gnu/libglfw.so | grep -E "glfwGet(X11|Wayland|Platform)" ; echo "exit: $?")
+  ⎿  0000000000018da0 T glfwGetX11Adapter
+     0000000000019de0 T glfwGetX11Display
+     0000000000018de0 T glfwGetX11Monitor
+     … +3 lines (ctrl+o to expand)
+
+  Thought for 38s (ctrl+o to expand)
+
+● Definitive: system libglfw exports only glfwGetX11* — it's an X11-only build (no Wayland backend at all). So the Wayland branch can't
+  even link here. The right fix is a configure-time feature probe in CMake: use the dual-backend path only when the symbols actually exist,
+  otherwise take the X11-only path (which also works on Wayland sessions via XWayland).
+
+● Update(CMakeLists.txt)
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Edit file
+ CMakeLists.txt
+╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
+ 14  # Wayland client headers (openSUSE installs them under /usr/include/wayland)
+ 15  pkg_check_modules(WAYLAND REQUIRED IMPORTED_TARGET wayland-client)
+ 16  
+ 17 +# Distro GLFW builds may omit the Wayland backend entirely (e.g. Ubuntu's                                                             
+
+● Odd — let me recheck the symbol list properly:
+
+● Bash(nm -D /usr/lib/x86_64-linux-gnu/libglfw.so | grep -E "glfwGet(X11|Wayland|Platform)" ; echo "exit: $?")
+  ⎿  0000000000018da0 T glfwGetX11Adapter
+     0000000000019de0 T glfwGetX11Display
+     0000000000018de0 T glfwGetX11Monitor
+     … +3 lines (ctrl+o to expand)
+
+  Thought for 38s (ctrl+o to expand)
+
+● Definitive: system libglfw exports only glfwGetX11* — it's an X11-only build (no Wayland backend at all). So the Wayland branch can't
+  even link here. The right fix is a configure-time feature probe in CMake: use the dual-backend path only when the symbols actually exist,
+  otherwise take the X11-only path (which also works on Wayland sessions via XWayland).
+
+● Update(CMakeLists.txt)
+  ⎿  Added 16 lines
+      14  # Wayland client headers (openSUSE installs them under /usr/include/wayland)
+      15  pkg_check_modules(WAYLAND REQUIRED IMPORTED_TARGET wayland-client)
+      16  
+      17 +# Distro GLFW builds may omit the Wayland backend entirely (e.g. Ubuntu's                                                 
+      18 +# libglfw is X11-only), in which case the Wayland native access symbols do                                                
+      19 +# not exist. Probe for them instead of using the GLFW 3.4-only                                                            
+      20 +# glfwGetPlatform() API.                                                                                                  
+      21 +include(CheckCSourceCompiles)                                                                                             
+      22 +set(CMAKE_REQUIRED_LIBRARIES PkgConfig::GLFW PkgConfig::WAYLAND)                                                          
+      23 +check_c_source_compiles(                                                                                                  
+      24 +    "                                                                                                                     
+      25 +    #define GLFW_EXPOSE_NATIVE_WAYLAND                                                                                    
+      26 +    #include <GLFW/glfw3.h>                                                                                               
+      27 +    #include <GLFW/glfw3native.h>                                                                                         
+      28 +    int main(void) { return glfwGetWaylandDisplay() != 0; }                                                               
+      29 +    "                                                                                                                     
+      30 +    GLFW_HAS_WAYLAND_NATIVE)                                                                                              
+      31 +unset(CMAKE_REQUIRED_LIBRARIES)                                                                                           
+      32 +                                                                                                                          
+      33  # Vendored wgpu-native ffi (headers + prebuilt library, wgpu-native v29.0.1.1)
+      34  set(WGPU_FFI ${CMAKE_CURRENT_SOURCE_DIR}/include/vendor/ffi)
+      35  set(WGPU_LIBRARY ${WGPU_FFI}/lib/libwgpu_native.so)
+
+● Update(CMakeLists.txt)
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+      22 +set(CMAKE_REQUIRED_LIBRARIES PkgConfig::GLFW PkgConfig::WAYLAND)                                                          
+      23 +check_c_source_compiles(                                                                                                  
+      24 +    "                                                                                                                     
+      25 +    #define GLFW_EXPOSE_NATIVE_WAYLAND                                                                                    
+      26 +    #include <GLFW/glfw3.h>                                                                                               
+      27 +    #include <GLFW/glfw3native.h>                                                                                         
+      28 +    int main(void) { return glfwGetWaylandDisplay() != 0; }                                                               
+      29 +    "                                                                                                                     
+      30 +    GLFW_HAS_WAYLAND_NATIVE)                                                                                              
+      31 +unset(CMAKE_REQUIRED_LIBRARIES)                                                                                           
+      32 +                                                                                                                          
+      33  # Vendored wgpu-native ffi (headers + prebuilt library, wgpu-native v29.0.1.1)
+      34  set(WGPU_FFI ${CMAKE_CURRENT_SOURCE_DIR}/include/vendor/ffi)
+      35  set(WGPU_LIBRARY ${WGPU_FFI}/lib/libwgpu_native.so)
+
+● Update(CMakeLists.txt)
+  ⎿  Added 4 lines, removed 4 lines
+      60      target_compile_definitions(${ProjectId} PRIVATE GLFW_EXPOSE_NATIVE_WIN32)
+      61      set(OS_LIBRARIES userenv ws2_32 bcrypt)
+      62  elseif(UNIX AND NOT APPLE)
+      63 -    target_compile_definitions(${ProjectId} PRIVATE                                                                       
+      64 -        GLFW_EXPOSE_NATIVE_X11                                                                                            
+      65 -        GLFW_EXPOSE_NATIVE_WAYLAND                                                                                        
+      66 -    )                                                                                                                     
+      63 +    target_compile_definitions(${ProjectId} PRIVATE GLFW_EXPOSE_NATIVE_X11)                                               
+      64 +    if (GLFW_HAS_WAYLAND_NATIVE)                                                                                          
+      65 +        target_compile_definitions(${ProjectId} PRIVATE GLFW_EXPOSE_NATIVE_WAYLAND)                                       
+      66 +    endif()                                                                                                               
+      67      set(OS_LIBRARIES m dl pthread)
+      68  elseif(APPLE)
+      69      target_compile_definitions(${ProjectId} PRIVATE GLFW_EXPOSE_NATIVE_COCOA)
+
+  Thought for 8s (ctrl+o to expand)
+
+● Now add the X11-only fallback branch in src/main.c:
+
+● Update(src/main.c)
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Edit file
+ src/main.c
+╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
+ 159                      },
+ 160              });
+ 161      }
+ 162 +#elif defined(GLFW_EXPOSE_NATIVE_X11)                                                                                                
+ 163 +    // GLFW built without the Wayland backend: windows are always X11, even                                                          
+ 164 +    // when running under Wayland (via XWayland).                                                                                    
+ 165 +    {                                                                                                                                
+ 166 +        Display *x11_display = glfwGetX11Display();                                                                                  
+ 167 +        Window x11_window = glfwGetX11Window(window);                                                                                
+ 168 +        demo.surface = wgpuInstanceCreateSurface(                                                                                    
+      64 -        GLFW_EXPOSE_NATIVE_X11                                                                                            
+      65 -        GLFW_EXPOSE_NATIVE_WAYLAND                                                                                        
+      66 -    )                                                                                                                     
+      63 +    target_compile_definitions(${ProjectId} PRIVATE GLFW_EXPOSE_NATIVE_X11)                                               
+      64 +    if (GLFW_HAS_WAYLAND_NATIVE)                                                                                          
+      65 +        target_compile_definitions(${ProjectId} PRIVATE GLFW_EXPOSE_NATIVE_WAYLAND)                                       
+      66 +    endif()                                                                                                               
+      67      set(OS_LIBRARIES m dl pthread)
+      68  elseif(APPLE)
+      69      target_compile_definitions(${ProjectId} PRIVATE GLFW_EXPOSE_NATIVE_COCOA)
+
+  Thought for 8s (ctrl+o to expand)
+
+● Now add the X11-only fallback branch in src/main.c:
+
+● Update(src/main.c)
+  ⎿  Added 21 lines
+      159                      },
+      160              });
+      161      }
+      162 +#elif defined(GLFW_EXPOSE_NATIVE_X11)                                                                                    
+      163 +    // GLFW built without the Wayland backend: windows are always X11, even                                              
+      164 +    // when running under Wayland (via XWayland).                                                                        
+      165 +    {                                                                                                                    
+      166 +        Display *x11_display = glfwGetX11Display();                                                                      
+      167 +        Window x11_window = glfwGetX11Window(window);                                                                    
+      168 +        demo.surface = wgpuInstanceCreateSurface(                                                                        
+      169 +            demo.instance,                                                                                               
+      170 +            &(const WGPUSurfaceDescriptor){                                                                              
+      171 +                .nextInChain =                                                                                           
+      172 +                    (WGPUChainedStruct *)&(                                                                              
+      173 +                        const WGPUSurfaceSourceXlibWindow){                                                              
+      174 +                        .chain =                                                                                         
+      175 +                            (const WGPUChainedStruct){                                                                   
+      176 +                                .sType = WGPUSType_SurfaceSourceXlibWindow,                                              
+      177 +                            },                                                                                           
+      178 +                        .display = x11_display,                                                                          
+      179 +                        .window = x11_window,                                                                            
+      180 +                    },                                                                                                   
+      181 +            });                                                                                                          
+      182 +    }                                                                                                                    
+      183  #elif defined(GLFW_EXPOSE_NATIVE_WIN32)
+      184      {
+      185          HWND hwnd = glfwGetWin32Window(window);
+
+  Thought for 5s (ctrl+o to expand)
+
+● The justfile's plain-gcc r recipe also lacks any GLFW_EXPOSE_NATIVE_* define (which glfw3native.h requires), so it couldn't compile this
+  file at all — fixing that too:
+
+● Update(justfile)
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Edit file
+      177 +                            },                                                                                           
+      178 +                        .display = x11_display,                                                                          
+      179 +                        .window = x11_window,                                                                            
+      180 +                    },                                                                                                   
+      181 +            });                                                                                                          
+      182 +    }                                                                                                                    
+      183  #elif defined(GLFW_EXPOSE_NATIVE_WIN32)
+      184      {
+      185          HWND hwnd = glfwGetWin32Window(window);
+
+  Thought for 5s (ctrl+o to expand)
+
+● The justfile's plain-gcc r recipe also lacks any GLFW_EXPOSE_NATIVE_* define (which glfw3native.h requires), so it couldn't compile this
+  file at all — fixing that too:
+
+● Update(justfile)
+  ⎿  Added 3 lines, removed 3 lines
+      20  
+      21  # Common flags
+      22  cflags := if os == "Linux" { \
+      23 -    "-std=c11 -O2 -I/usr/include -I"+wgpu_ffi+" -I"+wgpu_ffi+"/webgpu-headers -Iinclude/framework" \                      
+      23 +    "-std=c11 -O2 -DGLFW_EXPOSE_NATIVE_X11 -I/usr/include -I"+wgpu_ffi+" -I"+wgpu_ffi+"/webgpu-headers -Iinclude/framework
+         +" \                                                                                                                       
+      24    } else if os == "Darwin" { \
+      25 -    "-std=c11 -O2 -I/opt/homebrew/include -I"+wgpu_ffi+" -I"+wgpu_ffi+"/webgpu-headers -Iinclude/framework" \             
+      25 +    "-std=c11 -O2 -DGLFW_EXPOSE_NATIVE_COCOA -I/opt/homebrew/include -I"+wgpu_ffi+" -I"+wgpu_ffi+"/webgpu-headers -Iinclud
+         +e/framework" \                                                                                                            
+      26    } else { \
+      27 -    "-std=c11 -O2 -I/usr/local/include -I"+wgpu_ffi+" -I"+wgpu_ffi+"/webgpu-headers -Iinclude/framework" \                
+      27 +    "-std=c11 -O2 -DGLFW_EXPOSE_NATIVE_WIN32 -I/usr/local/include -I"+wgpu_ffi+" -I"+wgpu_ffi+"/webgpu-headers -Iinclude/f
+         +ramework" \                                                                                                               
+      28    }
+      29  
+      30  ldflags := if os == "Linux" { \
+  ⎿  Found 10 new diagnostic issues in 1 file (ctrl+o to expand)
+
+● Now the full rebuild (fresh configure, since the probe result changes cache variables):
+
+● Bash(rm -rf target && cmake -B target -G Ninja -D CMAKE_C_COMPILER=/opt/gcc-16/bin/gcc -D CMAKE_BUILD_TYPE=Debug 2>&1 | grep -E
+      "glfw|wayland|Wayland|Configuring|err…)
+  ⎿  -- Checking for module 'glfw3'
+     --   Found glfw3, version 3.3.10
+     -- Checking for module 'wayland-client'
+     … +9 lines (ctrl+o to expand)
+
+  Thought for 3s (ctrl+o to expand)
+
+● Builds and links. One last warning of the same kind in framework.c:71 — fixing for a clean build:
+
+  Searched for 1 pattern, read 1 file (ctrl+o to expand)
+
+● Update(include/framework/framework.c)
+  ⎿  Added 1 line, removed 1 line
+      68          &(const WGPUShaderModuleDescriptor){
+      69              .label = {name, WGPU_STRLEN},
+      70              .nextInChain =
+      71 -                (const WGPUChainedStruct *)&(const WGPUShaderSourceWGSL){                                                 
+      71 +                (WGPUChainedStruct *)&(const WGPUShaderSourceWGSL){                                                       
+      72                      .chain =
+      73                          (const WGPUChainedStruct){
+      74                              .sType = WGPUSType_ShaderSourceWGSL,
+
+```
+
+# test 하는 과정
+
+```bash
+● The build fails because include/vendor/ffi/lib/libwgpu_native.so doesn't exist — the vendored ffi dir only
+  has headers. Let me check the justfile and whether the library exists somewhere else on the system.
+
+  Read 1 file (ctrl+o to expand)
+
+● Bash(fd -H libwgpu_native /home/gygy/my_projects/Cpp_Lang/vulkan-tutorial-rust_cpp 2>/dev/null; echo
+      "---system---"; fd libwgpu_native /opt /usr/local 2>/dev/null; e…)
+  ⎿  ---system---
+     ---src---
+     main.c
+     shader.wgsl
+
+  Thought for 8s (ctrl+o to expand)
+
+● The .so doesn't exist anywhere in the repo or system — the vendor dir only has headers. Let me check git
+  history and the README to see how the library was supposed to get there.
+
+● Bash(git log --oneline -5 -- include/vendor 2>/dev/null; echo "---"; git ls-files include/vendor | head; echo
+      "---gitignore---"; cat .gitignore 2>/dev/null; cat ../.…)
+  ⎿  Error: Exit code 1
+     a86bc25 triangle
+     ---
+     include/vendor/ffi/webgpu-headers/webgpu.h
+     include/vendor/ffi/wgpu.h
+     ---gitignore---
+     .idea/
+     #
+     build
+     target/
+     … +84 lines (ctrl+o to expand)
+
+  Thought for 10s, listed 1 directory (ctrl+o to expand)
+
+● Key findings: .gitignore excludes *.so (so the prebuilt lib was never committed — it must be fetched), and
+  the project is a port of the gfx-rs/wgpu-native C examples, pinned to wgpu-native v29.0.1.1. Let me confirm
+  what src/main.c needs and find the matching release asset.
+
+● Bash(uname -m; head -20 src/main.c; echo ---; grep -n "wgpu.h\|webgpu.h" include/framework/framework.h |
+      head)
+  ⎿  x86_64
+     #include "framework.h"
+     #include "webgpu-headers/webgpu.h"
+     … +20 lines (ctrl+o to expand)
+
+● Bash(curl -sL --max-time 30 "https://api.github.com/repos/gfx-rs/wgpu-native/releases/tags/v29.0.1.1" | grep
+      -E '"tag_name"|"name":.*linux|browser_download_url.*linu…)
+  ⎿    "tag_name": "v29.0.1.1",
+           "name": "wgpu-linux-aarch64-debug.zip",
+           "browser_download_url": "https://github.com/gfx-rs/wgpu-native/releases/download/v29.0.1.1/wgpu
+     … +10 lines (ctrl+o to expand)
+
+  Thought for 23s (ctrl+o to expand)
+
+● The release exists with a linux-x86_64 build matching the pinned version. I'll download it and place the .so
+  where CMake expects it.
+
+● Bash(cd /tmp && rm -f wgpu-linux-x86_64-release.zip && curl -sL --max-time 120 -o
+      wgpu-linux-x86_64-release.zip "https://github.com/gfx-rs/wgpu-native/releases/downl…)
+  ⎿  wgpu-native-extract/lib/libwgpu_native.so
+     wgpu-native-extract/lib/libwgpu_native.a
+     wgpu-native-extract/wgpu-native-meta/wgpu-native-git-tag
+     … +3 lines (ctrl+o to expand)
+  ⎿  Shell cwd was reset to /home/gygy/my_projects/Cpp_Lang/vulkan-tutorial-rust_cpp/c_lang/triangle_c
+
+  Thought for 41s (ctrl+o to expand)
+
+● Extracted cleanly. Let me verify the vendored headers match this release version, then copy the lib into
+  place.
+
+● Bash(diff -q /tmp/wgpu-native-extract/include/webgpu/wgpu.h include/vendor/ffi/wgpu.h; diff -q
+      /tmp/wgpu-native-extract/include/webgpu/webgpu.h include/vendor/ffi/we…)
+  ⎿  total 59872
+     drwxrwxr-x 2 gygy gygy     4096 Aug 17 09:49 .
+     drwxrwxr-x 4 gygy gygy     4096 Aug 17 09:49 ..
+     … +2 lines (ctrl+o to expand)
+
+  Thought for 6s (ctrl+o to expand)
+
+● Headers match the release exactly (no diff output), confirming the v29.0.1.1 pin. Library is now in place.
+  Rebuilding:
+
+● Bash(rm -rf target && cmake -B target -G Ninja -D CMAKE_C_COMPILER=/opt/gcc-16/bin/gcc -D
+      CMAKE_BUILD_TYPE=Debug 2>&1 | tail -3 && cmake --build target 2>&1 | tail -…)
+  ⎿  -- Configuring done (0.1s)
+     -- Generating done (0.0s)
+     -- Build files have been written to: /home/gygy/my_projects/Cpp_Lang/vulkan-tutorial-rust_cpp/c_lang/
+     … +15 lines (ctrl+o to expand)
+
+  Thought for 5s (ctrl+o to expand)
+
+● Library linking is fixed. Now a real code error: GLFW_PLATFORM_WAYLAND / glfwGetPlatform() are GLFW 3.4 APIs,
+  but the system has glfw 3.3.10. Let me look at that code:
+
+  Thought for 1m 1s, read 1 file (ctrl+o to expand)
+
+● The link error is fixed; now there's a compile error in src/main.c:143 — glfwGetPlatform() /
+  GLFW_PLATFORM_WAYLAND are GLFW 3.4 APIs, but pkg-config found glfw 3.3.10. Let me check the header details
+  and the surrounding code:
+  
+  Thought for 23s, searched for 1 pattern, read 1 file (ctrl+o to expand)
+
+● Now I have the full picture. Three things to fix in src/main.c:
+     
+  1. Error (line 125/143): glfwGetPlatform()/GLFW_PLATFORM_* are GLFW 3.4 APIs; installed lib is 3.3.10. On 3.3
+  the portable runtime check is probing glfwGetWaylandDisplay() for NULL (returns NULL when running under
+  X11).
+  2. Warning: vendored webgpu.h declares WGPUChainedStruct * nextInChain (non-const, line 4219) but the code
+  casts to (const WGPUChainedStruct *).
+  3. -Wswitch warning: switch misses WGPUSurfaceGetCurrentTextureStatus_Error.
+
+● Bash(grep -n "(const WGPUChainedStruct \*)" src/main.c; echo ---; sed -n 296,315p src/main.c)
+  ⎿  114:                    (const WGPUChainedStruct *)&(
+     132:                    (const WGPUChainedStruct *)&(
+     150:                    (const WGPUChainedStruct *)&(
+     … +22 lines (ctrl+o to expand)
+
+  Thought for 31s (ctrl+o to expand)
+
+● Now applying the fixes:
+
+```
+
 <hr />
 
 # fix
