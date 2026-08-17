@@ -1794,40 +1794,10 @@ static void vulkan_create_swapchain_pass( GpuDevice& gpu, const RenderPassCreati
     render_pass->width = gpu.swapchain_width;
     render_pass->height = gpu.swapchain_height;
 
-    // Manually transition the texture
-    VkCommandBufferBeginInfo beginInfo = { VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO };
-    beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-
-    CommandBuffer* command_buffer = gpu.get_instant_command_buffer();
-    vkBeginCommandBuffer( command_buffer->vk_command_buffer, &beginInfo );
-
-    VkBufferImageCopy region = {};
-    region.bufferOffset = 0;
-    region.bufferRowLength = 0;
-    region.bufferImageHeight = 0;
-
-    region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    region.imageSubresource.mipLevel = 0;
-    region.imageSubresource.baseArrayLayer = 0;
-    region.imageSubresource.layerCount = 1;
-
-    region.imageOffset = { 0, 0, 0 };
-    region.imageExtent = { gpu.swapchain_width, gpu.swapchain_height, 1 };
-
-    // Transition
-    for ( size_t i = 0; i < gpu.vulkan_swapchain_image_count; i++ ) {
-        transition_image_layout( command_buffer->vk_command_buffer, gpu.vulkan_swapchain_images[ i ], gpu.vulkan_surface_format.format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, false );
-    }
-
-    vkEndCommandBuffer( command_buffer->vk_command_buffer );
-
-    // Submit command buffer
-    VkSubmitInfo submitInfo = { VK_STRUCTURE_TYPE_SUBMIT_INFO };
-    submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &command_buffer->vk_command_buffer;
-
-    vkQueueSubmit( gpu.vulkan_queue, 1, &submitInfo, VK_NULL_HANDLE );
-    vkQueueWaitIdle( gpu.vulkan_queue );
+    // NOTE: swapchain images are NOT transitioned here. Presentable images can
+    // only be used between acquire and present, so the layout transition from
+    // UNDEFINED to PRESENT_SRC_KHR is handled by the render pass itself
+    // ( see initialLayout / finalLayout above ).
 }
 
 static void vulkan_create_framebuffer( GpuDevice& gpu, RenderPass* render_pass, const TextureHandle* output_textures, u32 num_render_targets, TextureHandle depth_stencil_texture ) {

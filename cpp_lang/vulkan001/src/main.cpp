@@ -272,6 +272,15 @@ int main(int argc, char **argv) {
     glTF::Buffer &buffer = scene.buffers[buffer_index];
 
     FileReadResult buffer_data = file_read_binary(buffer.uri.data, allocator);
+    if (buffer_data.data == nullptr) {
+      // NOTE: file_read_binary returns a null pointer if the file is missing.
+      // Without this check a missing .bin crashes later in
+      // GpuDevice::create_buffer when uploading buffer view data.
+      printf("Error: cannot read binary file '%s' referenced by '%s'.\n"
+             "Check that the glTF file and its .bin are in the same folder.\n",
+             buffer.uri.data, argv[1]);
+      return 1;
+    }
     buffers_data.push(buffer_data.data);
   }
 

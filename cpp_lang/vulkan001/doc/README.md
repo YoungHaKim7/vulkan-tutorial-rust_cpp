@@ -34,6 +34,24 @@ grep -rn "InjectDefault3DModel" --include="*.cpp" --include="*.hpp" . | grep -v 
    "
    Check InjectDefault3DModel and glTF index types
 
+python3 - <<'EOF'
+   import struct
+   with open('/tmp/vk.xwd','rb') as f:
+       data = f.read()
+   hdr = struct.unpack('>25I', data[:100])
+   header_size, version, fmt, depth, w, h, xoff, byte_order, unit, bit_order, pad, bpp, bpl = hdr[:13]
+   print('size', w, h, 'depth', depth, 'bpp', bpp, 'bpl', bpl, 'header_size', header_size)
+   from PIL import Image
+   off = header_size
+   px = data[off:off + bpl*h]
+   img = Image.frombytes('RGBX' if bpp==32 else 'RGB', (w,h), px, 'raw', 'BGRX' if bpp==32 else 'BGR', bpl)
+   img = img.convert('RGB')
+   # crop center-ish where window likely is (1280x800 window)
+   img.save('/tmp/vk_shot.png')
+   print('saved /tmp/vk_shot.png')
+   EOF
+   Decode XWD screenshot to PNG
 
 ```
+
 
