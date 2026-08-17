@@ -6,7 +6,7 @@
 # A collection of tools, libraries, and tests for Vulkan shader compilation.
 - https://github.com/google/shaderc
 
-# File Types.
+# File Types.(`.vert`, `.frag`, `.spv` 차이점 이해)
 - https://vulkan.lunarg.com/doc/view/1.4.321.0/mac/antora/tutorial/latest/03_Drawing_a_triangle/02_Graphics_pipeline_basics/01_Shader_modules.html
 
 - `vert`: Vertex shader source code written in languages like GLSL or HLSL..
@@ -16,14 +16,13 @@
   - `frag`: 픽셀 단위 색상 및 조명 계산을 위한 프래그먼트 셰이더 소스 코드.
 
 - `.spv`: Standardized binary SPIR-V bytecode compiled from vertex or fragment files, used by APIs like Vulkan
-  - `.spv`: 버텍스 또는 프래그먼트 파일에서 컴파일된 표준화된 바이너리 SPIR-V 바이트코드로, Vulkan 같은 API에서 사용됩니다kk
+  - `.spv`: 버텍스 또는 프래그먼트 파일에서 컴파일된 표준화된 바이너리 SPIR-V 바이트코드로, Vulkan 같은 API에서 사용됩니다
 
 
 # 외국유튜브 영상
 - [(220624)Vulkan with C++ 10 SPIR V Files | The Graphics Guy](https://youtu.be/5spoiJQo1O8?si=188kRaRBUd4MLcSr)
   - Youtube채널 깃허브 
     - https://github.com/amengede/getIntoGameDev
-
 
 # `slang` & `slangc` version
 
