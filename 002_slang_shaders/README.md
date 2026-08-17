@@ -18,3 +18,7 @@
 - `.spv`: Standardized binary SPIR-V bytecode compiled from vertex or fragment files, used by APIs like Vulkan
   - `.spv`: 버텍스 또는 프래그먼트 파일에서 컴파일된 표준화된 바이너리 SPIR-V 바이트코드로, Vulkan 같은 API에서 사용됩니다kk
 
+
+# 외국유튜브 영상
+- [(220624)Vulkan with C++ 10 SPIR V Files | The Graphics Guy](https://youtu.be/5spoiJQo1O8?si=188kRaRBUd4MLcSr)
+
