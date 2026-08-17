@@ -6,7 +6,7 @@ struct QueueFamilyIndices {
 
 impl QueueFamilyIndices {
     // graphics_family와 present_family 둘 다 데이터(Some)가 있으면 true
-    fn is_complete(&self) -> bool {
+    fn has_value(&self) -> bool {
         self.graphics_family.is_some() && self.present_family.is_some()
     }
 }
@@ -16,11 +16,11 @@ fn main() {
         graphics_family: Some(0),
         present_family: Some(0),
     };
-    println!("complete: {}", complete.is_complete()); // true
+    println!("complete: {}", complete.has_value()); // true
 
     let incomplete = QueueFamilyIndices {
         graphics_family: Some(0),
         present_family: None,
     };
-    println!("incomplete: {}", incomplete.is_complete()); // false
+    println!("incomplete: {}", incomplete.has_value()); // false
 }
