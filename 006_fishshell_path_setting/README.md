@@ -4,7 +4,9 @@ set -gx VK_ADD_LAYER_PATH "$VULKAN_SDK/share/vulkan/explicit_layer.d" $VK_ADD_LA
 set -gx PKG_CONFIG_PATH "$VULKAN_SDK/lib/VulkanLoader/lib/pkgconfig" "$VULKAN_SDK/share/pkgconfig" "$VULKAN_SDK/lib/pkgconfig" $PKG_CONFIG_PATH
 set -gx CMAKE_PREFIX_PATH "$VULKAN_SDK" "$VULKAN_SDK/lib/VulkanLoader"
 ```
+
 - `.fish/config.fish`
+  - https://vulkan.lunarg.com/doc/sdk/1.4.357.1/linux/getting_started.html
 
 ```fish
 fish_add_path "$HOME/vulkan/vulkansdk-linux-x86_64-1.4.357.1/1.4.357.1/x86_64/bin"
