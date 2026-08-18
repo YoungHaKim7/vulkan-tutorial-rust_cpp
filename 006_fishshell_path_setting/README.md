@@ -1,3 +1,11 @@
+# bash같은곳은 자동으로.
+
+```
+source setup-env.sh
+```
+
+# fishshell기준
+
 ```fish
 set -gx LD_LIBRARY_PATH "$VULKAN_SDK/lib" $LD_LIBRARY_PATH
 set -gx VK_ADD_LAYER_PATH "$VULKAN_SDK/share/vulkan/explicit_layer.d" $VK_ADD_LAYER_PATH
