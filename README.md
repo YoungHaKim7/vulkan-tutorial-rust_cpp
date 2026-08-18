@@ -182,6 +182,12 @@ OpenGL ES profile shading language version string: OpenGL ES GLSL ES 3.20
 OpenGL ES profile extensions:
 ```
 
+### Vulkan version check
+
+```bash
+vulkaninfo | grep "version"
+```
+
 ## Download SDK
 - https://vulkan.lunarg.com/sdk/home
 
