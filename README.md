@@ -55,6 +55,9 @@
 - https://github.com/KhronosGroup/Vulkan-Docs 
   - 한국사람이 잘 정리 https://nodiscard.tistory.com/257
 
+- OpenGL Shading Language (GLSL)
+  - https://en.wikipedia.org/wiki/OpenGL_Shading_Language
+
 <hr />
 
 - Khronos-reference front end for GLSL/ESSL, partial front end for HLSL, and a SPIR-V generator. 
