@@ -145,9 +145,14 @@ libvulkan_intel libvulkan_intel-32bit \
 libvulkan_radeon libvulkan_radeon-32bit \
 vulkan-tools
 
+sudo zypper install vulkan-tools libvulkan1 vulkan-validationlayers
+
 # Vulkan SDK로 설치하다가 에러나서 추가로 철치해야함
 sudo zypper install xcb-util-keysyms-devel liblz4-devel lz4
 ```
+
+- NVIDIA GPU 관련
+  - https://forums.opensuse.org/t/cannot-play-vulkan-games-on-nvidia-after-update/187784/44?page=2
 
 - openGL 설치 잘 되어 있나 확인
 
