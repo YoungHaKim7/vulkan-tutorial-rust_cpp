@@ -11,6 +11,8 @@
 
 - 기초 개념 잡기
   - [Shader](#shader)
+  - Vulkan설명(나무위키)
+    - https://namu.wiki/w/Vulkan(API)
 
 - https://github.com/SaschaWillems/Vulkan
 
