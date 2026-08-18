@@ -58,6 +58,9 @@
 - OpenGL Shading Language (GLSL)
   - https://en.wikipedia.org/wiki/OpenGL_Shading_Language
 
+- Vulkan에 쓰는 형제들
+  - GLFW(SDL보단 glfw를 선택함), GLM
+
 <hr />
 
 - Khronos-reference front end for GLSL/ESSL, partial front end for HLSL, and a SPIR-V generator. 
