@@ -30,3 +30,10 @@ Then rebuilt the previously failing `pass_manager.cpp.o` — it compiles cleanly
 Everything before DXC already built, so those components will no-op quickly, and the run continues with DXC, then SPIRV-Reflect, profiles, VMA, VulkanCapsViewer, CrashDiagnosticLayer, and slang.
 
 One heads-up: DXC (LLVM-based) isn't routinely built with GCC 16, so if a *different* warning-as-error or GCC incompatibility appears later in the DXC part itself, the clean fallback is building with clang: `./vulkansdk --clean` followed by `CC=clang CXX=clang++ ./vulkansdk --no-deps --maxjobs` — though that rebuilds everything from scratch. If you'd rather not disable `-Werror` wholesale for SPIRV-Tools, the narrower alternative is adding `#pragma GCC diagnostic ignored "-Warray-bounds"` near the top of `source/DirectXShaderCompiler/external/SPIRV-Tools/source/util/timer.h`.
+
+
+# Vulkan version check
+
+```bash
+vulkaninfo | grep "version"
+```
