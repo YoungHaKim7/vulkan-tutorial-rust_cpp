@@ -138,6 +138,7 @@ $ source setup-env.sh
 
 
 - openSUSE Install
+  - https://gist.github.com/dukenmarga/3571c45f6212144faaaee72b1b03d943
 
 ```bash
 sudo zypper in libvulkan1 libvulkan1-32bit \
