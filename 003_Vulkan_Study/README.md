@@ -8,5 +8,9 @@
 - slang파일보는거 만들어 보고 다음에 공부해야할 내용(260819)
   - https://docs.rs/slang_files_viewer_shaders/0.1.0/slang_files_viewer_shaders/#18-the-most-important-concepts-to-learn-next
 
+- color관련
+  - struct RGB for sharing pixels between crates
+    - https://github.com/kornelski/rust-rgb
+
 # 나무위키가 잘 정리된듯
 - https://namu.wiki/w/Vulkan(API)
