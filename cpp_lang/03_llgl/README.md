@@ -55,3 +55,26 @@ Notes:
         ..
   cmake --build .
 ```
+
+# example  보기
+
+Your examples-enabled build is in `build_local/` (the plain `build/` only has the library). So far only one example binary exists there:
+
+**Run the one that's built:**
+```fish
+./RunExamplesLinux.sh build_local/build
+```
+That gives you an interactive menu (currently just `Animation`). Equivalently, run it directly:
+```fish
+cd examples/Cpp/Animation
+../../../build_local/build/Example_Animation
+```
+The `cd` matters — examples load their media (textures, meshes) via relative paths.
+
+**Build the rest** — your cmake config has `LLGL_BUILD_EXAMPLES=ON`, so everything in `examples/Cpp/` (HelloTriangle, Texturing, PBR, ShadowMapping, PostProcessing, …) is available as a target:
+```fish
+cmake --build build_local -j
+```
+That builds all of them (`MultiRenderer` is excluded from the Linux runner script; `HelloUWP`/`HelloOpenXR` are Windows/OpenXR-specific). Then re-run `RunExamplesLinux.sh build_local/build` and the menu will list all of them.
+
+A good first one to try once built: `HelloTriangle` — it's the minimal "is my renderer working" sanity check.
