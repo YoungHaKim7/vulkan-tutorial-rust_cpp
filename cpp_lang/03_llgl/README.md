@@ -43,3 +43,15 @@ cmake --build build_local --target Example_Animation
 Notes:
 - Linux needs the X11/Xrandr/OpenGL dev packages installed (the script validates this; skip with `-S`).
 - Run it from its own folder so it finds its shaders: `cd examples/Cpp/Animation && ../../../build_linux/Example_Animation` — or use `./RunExamplesLinux.sh Animation` from the repo root, which handles that.
+
+# Install LLGL
+
+```bash
+  mkdir build && cd build
+  cmake -DCMAKE_BUILD_TYPE=Release \
+        -DLLGL_BUILD_RENDERER_OPENGL=ON \
+        -DLLGL_BUILD_WRAPPER_C99=ON \
+        -DGaussLib_INCLUDE_DIR:STRING=/path/to/GaussianLib/include \
+        ..
+  cmake --build .
+```
