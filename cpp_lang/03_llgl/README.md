@@ -78,3 +78,35 @@ cmake --build build_local -j
 That builds all of them (`MultiRenderer` is excluded from the Linux runner script; `HelloUWP`/`HelloOpenXR` are Windows/OpenXR-specific). Then re-run `RunExamplesLinux.sh build_local/build` and the menu will list all of them.
 
 A good first one to try once built: `HelloTriangle` — it's the minimal "is my renderer working" sanity check.
+
+# 모든 예시 다 빌드
+
+Examples are already included by default — nothing extra needed:
+
+```bash
+./BuildLinux.sh
+```
+
+The script sets `LLGL_BUILD_EXAMPLES=ON` unless you pass `--no-examples`, so this builds all ~24 C++ examples (`HelloTriangle`, `PBR`, `ShadowMapping`, `Texturing`, …) along with the library. Each becomes a binary named `Example_<Name>` in `build_linux/build/` (Debug builds get a `D` suffix, e.g. `Example_HelloTriangleD`).
+
+Your existing `build_local/` dir also has examples enabled (`LLGL_BUILD_EXAMPLES=ON`, tests off), so to just build there:
+
+```bash
+cmake --build build_local -j$(nproc)
+```
+
+If configuring CMake manually instead, the flag is on you — it defaults to OFF in raw CMake:
+
+```bash
+cmake -DLLGL_BUILD_EXAMPLES=ON ...
+```
+
+Two caveats:
+
+- **Run them from their source directory** — examples load shaders/textures via relative paths. Easiest is the included picker, which handles the `cd` for you:
+  ```bash
+  ./RunExamplesLinux.sh          # interactive menu
+  ./RunExamplesLinux.sh -- ...   # pass args to the example
+  ```
+  Or manually: `cd examples/Cpp/HelloTriangle && ../../build_linux/build/Example_HelloTriangle`
+- `MultiRenderer` is excluded from the Linux run list, and `HelloUWP` is Windows/UWP-only — that's expected, not a build failure.
